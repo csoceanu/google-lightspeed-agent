@@ -1,0 +1,15 @@
+# Core dependencies
+aiohttp>=3.9.0
+
+# Optional: YAML config file support
+pyyaml>=6.0
+
+# Optional: semantic similarity free-form evaluation
+# pip install sentence-transformers
+# sentence-transformers>=2.2.0
+
+# Optional: LLM judge free-form evaluation
+requests>=2.31.0
+
+# Testing
+pytest>=7.0

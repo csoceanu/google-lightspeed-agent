@@ -1,0 +1,29 @@
+{
+  "report_version": "1.0",
+  "summary": {
+    "total_questions": 0,
+    "passed": 0,
+    "failed": 0,
+    "score": 0.0
+  },
+  "category_breakdown": {},
+  "type_breakdown": {},
+  "difficulty_breakdown": {},
+  "scenario_type_breakdown": {},
+  "timing": {
+    "avg_ms": 0.0,
+    "p50_ms": 0.0,
+    "p95_ms": 0.0,
+    "p99_ms": 0.0
+  },
+  "config": {
+    "endpoint": "http://agent",
+    "filters": {
+      "category": null,
+      "difficulty": null,
+      "question_type": null
+    },
+    "timestamp": "2026-07-22T07:43:44.804555+00:00"
+  },
+  "results": []
+}

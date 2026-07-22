@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lightspeed Agent Evaluation Report</title>
+<style>
+  :root {
+    --pass: #4CAF50;
+    --fail: #F44336;
+    --bg: #f5f6fa;
+    --card: #ffffff;
+    --border: #e0e0e0;
+    --text: #333333;
+    --text-light: #666666;
+    --shadow: 0 2px 8px rgba(0,0,0,0.08);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+                 "Helvetica Neue", Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.5;
+    padding: 24px;
+  }
+  h1 { font-size: 1.6em; margin-bottom: 4px; }
+  h2 { font-size: 1.2em; margin-bottom: 12px; color: var(--text); }
+  h3 { font-size: 1.05em; margin-bottom: 8px; }
+  .header {
+    background: var(--card);
+    border-radius: 10px;
+    padding: 24px 32px;
+    box-shadow: var(--shadow);
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  .header-meta { color: var(--text-light); font-size: 0.88em; }
+  .score-section {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    flex-wrap: wrap;
+  }
+  .score-big {
+    font-size: 3em;
+    font-weight: 800;
+    line-height: 1;
+  }
+  .score-big.high { color: var(--pass); }
+  .score-big.mid { color: #FF9800; }
+  .score-big.low { color: var(--fail); }
+  .score-detail { font-size: 0.95em; color: var(--text-light); }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+    gap: 16px;
+    margin-bottom: 20px;
+  }
+  .card {
+    background: var(--card);
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: var(--shadow);
+  }
+  .card svg { max-width: 100%; height: auto; }
+  .badge {
+    display: inline-block;
+    padding: 2px 10px;
+    border-radius: 12px;
+    font-size: 0.78em;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+  }
+  .badge.pass { background: #E8F5E9; color: var(--pass); }
+  .badge.fail { background: #FFEBEE; color: var(--fail); }
+  .results-card {
+    background: var(--card);
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: var(--shadow);
+    margin-bottom: 20px;
+    overflow-x: auto;
+  }
+  .filter-bar {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 14px;
+    align-items: center;
+  }
+  .filter-bar label { font-size: 0.85em; color: var(--text-light); }
+  .filter-bar select, .filter-bar input {
+    padding: 5px 10px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    font-size: 0.88em;
+    background: #fff;
+  }
+  table.results {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.88em;
+  }
+  table.results th {
+    text-align: left;
+    padding: 8px 10px;
+    border-bottom: 2px solid var(--border);
+    cursor: pointer;
+    user-select: none;
+    white-space: nowrap;
+  }
+  table.results th:hover { background: #f0f0f0; }
+  table.results th::after { content: " \2195"; color: #bbb; font-size: 0.8em; }
+  table.results td {
+    padding: 7px 10px;
+    border-bottom: 1px solid #f0f0f0;
+    vertical-align: top;
+  }
+  .result-row:hover { background: #fafbfd; }
+  .fail-row { background: #fffafa; }
+  .qid { font-family: monospace; font-size: 0.92em; white-space: nowrap; }
+  .latency { text-align: right; font-family: monospace; }
+  details > summary {
+    cursor: pointer;
+    color: #1976D2;
+    font-size: 0.92em;
+  }
+  details > summary:hover { text-decoration: underline; }
+  .detail-body {
+    margin-top: 8px;
+    padding: 10px;
+    background: #f9f9f9;
+    border-radius: 6px;
+    font-size: 0.92em;
+    word-break: break-word;
+  }
+  .detail-body p { margin-bottom: 4px; }
+  .detail-text { color: var(--text-light); font-style: italic; }
+  .stats-table { width: 100%; }
+  .stats-table td {
+    padding: 6px 10px;
+    border-bottom: 1px solid #f0f0f0;
+  }
+  .stats-table td:last-child {
+    text-align: right;
+    font-family: monospace;
+    font-weight: 600;
+  }
+  .hidden { display: none; }
+  footer {
+    text-align: center;
+    color: var(--text-light);
+    font-size: 0.82em;
+    margin-top: 32px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div>
+    <h1>Lightspeed Agent Evaluation Report</h1>
+    <div class="header-meta">
+      <div>Endpoint: http://agent</div>
+      <div>Timestamp: 2026-07-22T07:43:44.804555+00:00</div>
+      <div>Filters: category=None, difficulty=None, question_type=None</div>
+    </div>
+  </div>
+  <div class="score-section">
+    <svg width="180" height="140"
+                        viewBox="0 0 180 140"
+                        xmlns="http://www.w3.org/2000/svg">
+              <path d="M 20 100 A 70 70 0 0 1 160 100"
+                    fill="none" stroke="#E0E0E0" stroke-width="14"
+                    stroke-linecap="round"/>
+              <path d="M 20 100 A 70 70 0 0 1 160 100"
+                    fill="none" stroke="#F44336" stroke-width="14"
+                    stroke-linecap="round"
+                    stroke-dasharray="0.00 219.91"/>
+              <text x="90" y="86" text-anchor="middle"
+                    font-size="32" font-weight="bold" fill="#F44336">
+                0.0%</text>
+              <text x="90" y="106" text-anchor="middle"
+                    font-size="13" fill="#666">overall score</text>
+            </svg>
+  </div>
+</div>
+
+<div class="grid">
+  <div class="card" style="text-align:center;">
+    <h3>Score Overview</h3>
+    <div class="score-big low">0.0%</div>
+    <div class="score-detail">0 passed / 0 failed / 0 total</div>
+  </div>
+  
+  <div class="card"><svg width="200" height="200"></svg></div>
+</div>
+
+<div class="grid">
+  <div class="card"></div>
+  <div class="card"></div>
+  <div class="card"></div>
+</div>
+
+<div class="results-card">
+  <h2>All Results</h2>
+  <div class="filter-bar">
+    <label>Status:</label>
+    <select id="filterStatus">
+      <option value="">All</option>
+      <option value="PASS">Pass</option>
+      <option value="FAIL">Fail</option>
+    </select>
+    <label>Category:</label>
+    <select id="filterCategory">
+      <option value="">All</option>
+    </select>
+    <label>Difficulty:</label>
+    <select id="filterDifficulty">
+      <option value="">All</option>
+    </select>
+    <label>Search:</label>
+    <input type="text" id="searchBox" placeholder="question id or text...">
+  </div>
+  <table class="results" id="resultsTable">
+    <thead>
+      <tr>
+        <th data-col="0">Status</th>
+        <th data-col="1">ID</th>
+        <th data-col="2">Category</th>
+        <th data-col="3">Difficulty</th>
+        <th data-col="4">Type</th>
+        <th data-col="5">Scenario</th>
+        <th data-col="6">Latency</th>
+        <th data-col="7">Question</th>
+      </tr>
+    </thead>
+    <tbody>
+      
+    </tbody>
+  </table>
+</div>
+
+<footer>
+  Generated by Lightspeed Agent Evaluation Framework
+</footer>
+
+<script>
+(function() {
+  // populate filter dropdowns
+  var rows = document.querySelectorAll('.result-row');
+  var cats = new Set(), diffs = new Set();
+  rows.forEach(function(r) {
+    cats.add(r.dataset.category);
+    diffs.add(r.dataset.difficulty);
+  });
+  var catSel = document.getElementById('filterCategory');
+  Array.from(cats).sort().forEach(function(c) {
+    var o = document.createElement('option'); o.value = c; o.textContent = c;
+    catSel.appendChild(o);
+  });
+  var diffSel = document.getElementById('filterDifficulty');
+  Array.from(diffs).sort().forEach(function(d) {
+    var o = document.createElement('option'); o.value = d; o.textContent = d;
+    diffSel.appendChild(o);
+  });
+
+  function applyFilters() {
+    var status = document.getElementById('filterStatus').value;
+    var cat = catSel.value;
+    var diff = diffSel.value;
+    var search = document.getElementById('searchBox').value.toLowerCase();
+    rows.forEach(function(r) {
+      var show = true;
+      if (status && r.dataset.status !== status) show = false;
+      if (cat && r.dataset.category !== cat) show = false;
+      if (diff && r.dataset.difficulty !== diff) show = false;
+      if (search && r.textContent.toLowerCase().indexOf(search) === -1) show = false;
+      r.classList.toggle('hidden', !show);
+    });
+  }
+
+  document.getElementById('filterStatus').addEventListener('change', applyFilters);
+  catSel.addEventListener('change', applyFilters);
+  diffSel.addEventListener('change', applyFilters);
+  document.getElementById('searchBox').addEventListener('input', applyFilters);
+
+  // sortable columns
+  var table = document.getElementById('resultsTable');
+  var headers = table.querySelectorAll('th');
+  var sortDir = {};
+  headers.forEach(function(th) {
+    th.addEventListener('click', function() {
+      var col = parseInt(th.dataset.col);
+      var dir = sortDir[col] === 'asc' ? 'desc' : 'asc';
+      sortDir[col] = dir;
+      var tbody = table.querySelector('tbody');
+      var rowsArr = Array.from(tbody.querySelectorAll('tr'));
+      rowsArr.sort(function(a, b) {
+        var at = a.children[col].textContent.trim();
+        var bt = b.children[col].textContent.trim();
+        var an = parseFloat(at), bn = parseFloat(bt);
+        if (!isNaN(an) && !isNaN(bn)) {
+          return dir === 'asc' ? an - bn : bn - an;
+        }
+        return dir === 'asc' ? at.localeCompare(bt) : bt.localeCompare(at);
+      });
+      rowsArr.forEach(function(r) { tbody.appendChild(r); });
+    });
+  });
+})();
+</script>
+</body>
+</html>
