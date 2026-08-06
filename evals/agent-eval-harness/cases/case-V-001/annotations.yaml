@@ -1,0 +1,9 @@
+expected_tools:
+  - list_skills
+  - load_skill
+  - vulnerability__get_cves
+  - vulnerability__get_openapi
+expected_response: "A ranked list of up to 5 critical CVEs with CVE ID, CVSS score, and affected system count."
+expected_behavior:
+  - "Must list up to 5 critical CVEs ranked by exposed systems"
+  - "Must not claim to patch or remediate systems"

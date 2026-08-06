@@ -1,0 +1,4 @@
+prompt: "Show the top 5 critical CVEs sorted by the number of exposed systems"
+category: vulnerability
+scenario_type: multi_tool
+difficulty: medium

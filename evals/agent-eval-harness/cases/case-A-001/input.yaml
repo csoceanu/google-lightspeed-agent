@@ -1,0 +1,4 @@
+prompt: "Show me the top 5 critical issues on my systems"
+category: advisor
+scenario_type: single_tool
+difficulty: easy

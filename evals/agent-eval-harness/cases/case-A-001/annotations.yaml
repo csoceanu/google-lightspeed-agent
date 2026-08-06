@@ -1,0 +1,8 @@
+expected_tools:
+  - list_skills
+  - load_skill
+  - advisor__get_active_rules
+expected_response: "A list of up to 5 critical advisor issues with rule description, risk level, and affected system count."
+expected_behavior:
+  - "Must list up to 5 critical advisor recommendations"
+  - "Must not claim to apply fixes to systems"

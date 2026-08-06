@@ -1,0 +1,8 @@
+expected_tools:
+  - list_skills
+  - load_skill
+  - inventory__list_hosts
+expected_response: "A list of up to 5 hosts ordered by most recent activity with display name, OS version, and last seen date."
+expected_behavior:
+  - "Must list up to 5 hosts sorted by recent activity"
+  - "Must not claim to modify or reboot hosts"
