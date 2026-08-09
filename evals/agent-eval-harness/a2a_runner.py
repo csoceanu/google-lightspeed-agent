@@ -147,7 +147,11 @@ def main():
         }
         (output_dir / "metrics.json").write_text(json.dumps(metrics, indent=2))
 
-        print(f"Response received ({elapsed:.1f}s, {len(response_text)} chars)")
+        # Emit stream-json events to stdout for AEH trace building
+        _emit_stream_json(args.question, response_text, metadata, elapsed)
+
+        print(f"Response received ({elapsed:.1f}s, {len(response_text)} chars)",
+              file=sys.stderr)
 
     except (HTTPError, URLError, RuntimeError) as e:
         elapsed = time.time() - start
@@ -161,6 +165,47 @@ def main():
 
         print(f"ERROR after {elapsed:.1f}s: {e}", file=sys.stderr)
         sys.exit(1)
+
+
+def _emit_stream_json(question, response_text, metadata, elapsed):
+    """Emit stream-json events to stdout for AEH trace building."""
+    from datetime import datetime, timezone
+
+    now = datetime.now(timezone.utc)
+    ts = now.strftime("%Y-%m-%dT%H:%M:%S.%f")[:-3] + "Z"
+
+    # User event (the question)
+    print(json.dumps({
+        "type": "user",
+        "message": {"role": "user", "content": question},
+        "timestamp": ts,
+    }), flush=True)
+
+    # Assistant event (the response) — content as list of blocks for build_trace
+    print(json.dumps({
+        "type": "assistant",
+        "message": {
+            "role": "assistant",
+            "content": [{"type": "text", "text": response_text}],
+            "model": metadata.get("model", "lightspeed-agent"),
+        },
+        "timestamp": ts,
+        "duration_ms": int(elapsed * 1000),
+    }), flush=True)
+
+    # Result event (usage summary)
+    print(json.dumps({
+        "type": "result",
+        "duration_ms": int(elapsed * 1000),
+        "total_cost_usd": 0,
+        "usage": {
+            "input": metadata.get("prompt_tokens", 0),
+            "output": metadata.get("completion_tokens", 0),
+            "cache_read": metadata.get("cached_tokens", 0),
+        },
+        "model": metadata.get("model", "lightspeed-agent"),
+        "timestamp": ts,
+    }), flush=True)
 
 
 if __name__ == "__main__":

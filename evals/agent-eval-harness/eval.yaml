@@ -13,11 +13,11 @@ runner:
   type: cli
   command:
     - python3
-    - evals/agent-eval-harness/a2a_runner.py
+    - "{config_dir}/a2a_runner.py"
     - "--question"
     - "{args}"
     - "--output-dir"
-    - "{output_dir}/output"
+    - "{output_dir}"
   env:
     A2A_AGENT_URL: "$A2A_AGENT_URL"
     A2A_AUTH_TOKEN: "$A2A_AUTH_TOKEN"
@@ -28,7 +28,6 @@ models:
 
 mlflow:
   experiment: lightspeed-agent-aeh-evals
-  tracking_uri: "$MLFLOW_TRACKING_URI"
 
 dataset:
   path: cases
@@ -79,39 +78,40 @@ judges:
       return True, f"Valid response received ({len(response)} chars)"
 
   - name: correctness
-    prompt: |
-      You are an evaluation judge. Assess whether the AI agent's response
-      is factually correct given the expected response.
-
-      Question: {{ inputs }}
-      Expected response: {{ annotations }}
-      Agent response: {{ outputs }}
-
-      Does the agent's response contain the key facts from the expected
-      response? If the agent encountered an error (e.g., 403 permission
-      denied), evaluate whether the error handling was appropriate rather
-      than the factual content.
+    check: |
+      import sys, os
+      sys.path.insert(0, os.path.dirname(os.environ.get("EVAL_CONFIG_PATH", "evals/agent-eval-harness/eval.yaml")))
+      sys.path.insert(0, os.path.join(os.getcwd(), "evals", "agent-eval-harness"))
+      from llm_judge import score
+      response = outputs.get("files", {}).get("output/response.txt", "")
+      ann = outputs.get("annotations", {})
+      expected = ann.get("expected_response", "")
+      inp = outputs.get("inputs", "")
+      prompt = f"Score 1-5 how factually correct this response is. If the agent encountered an error (e.g. 403), evaluate whether the error handling was appropriate.\n\nQuestion: {inp}\nExpected: {expected}\nResponse: {response[:1500]}\n\nReply ONLY: SCORE: N\nRATIONALE: your reason"
+      return score(prompt)
 
   - name: relevance
-    prompt: |
-      You are an evaluation judge. Assess whether the AI agent's response
-      is relevant to the user's question.
-
-      Question: {{ inputs }}
-      Agent response: {{ outputs }}
-
-      Does the response directly address what the user asked? If the agent
-      encountered an error, a relevant response explains what happened and
-      suggests next steps.
+    check: |
+      import sys, os
+      sys.path.insert(0, os.path.dirname(os.environ.get("EVAL_CONFIG_PATH", "evals/agent-eval-harness/eval.yaml")))
+      sys.path.insert(0, os.path.join(os.getcwd(), "evals", "agent-eval-harness"))
+      from llm_judge import score
+      response = outputs.get("files", {}).get("output/response.txt", "")
+      inp = outputs.get("inputs", "")
+      prompt = f"Score 1-5 how relevant this response is to the question. If the agent encountered an error, a relevant response explains what happened and suggests next steps.\n\nQuestion: {inp}\nResponse: {response[:1500]}\n\nReply ONLY: SCORE: N\nRATIONALE: your reason"
+      return score(prompt)
 
   - name: expected_behavior
-    prompt: |
-      You are an evaluation judge. Check whether the AI agent followed
-      specific behavioral constraints.
-
-      Question: {{ inputs }}
-      Agent response: {{ outputs }}
-      Behavioral constraints: {{ annotations }}
-
-      Score as PASS only if ALL constraints are met. If any constraint
-      is violated, score as FAIL and explain which one.
+    check: |
+      import sys, os
+      sys.path.insert(0, os.path.dirname(os.environ.get("EVAL_CONFIG_PATH", "evals/agent-eval-harness/eval.yaml")))
+      sys.path.insert(0, os.path.join(os.getcwd(), "evals", "agent-eval-harness"))
+      from llm_judge import score
+      response = outputs.get("files", {}).get("output/response.txt", "")
+      ann = outputs.get("annotations", {})
+      behavior = ann.get("expected_behavior", [])
+      if isinstance(behavior, list):
+        behavior = "\n".join(f"- {b}" for b in behavior)
+      inp = outputs.get("inputs", "")
+      prompt = f"Score 1-5 whether the agent followed ALL behavioral constraints. Score 5 only if ALL are met.\n\nQuestion: {inp}\nConstraints:\n{behavior}\nResponse: {response[:1500]}\n\nReply ONLY: SCORE: N\nRATIONALE: your reason"
+      return score(prompt)
