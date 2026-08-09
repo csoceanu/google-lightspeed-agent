@@ -56,12 +56,17 @@ def score(prompt: str, max_tokens: int = 200, timeout: int = 60) -> tuple:
             text = (content or reasoning).strip()
 
             if text:
-                m = re.search(r'SCORE:\s*(\d)', text)
-                score_val = int(m.group(1)) if m else 3
-                rationale = re.sub(r'^.*?RATIONALE:\s*', '', text,
-                                   flags=re.DOTALL).strip()
-                if not rationale or rationale == text:
+                # Find the LAST SCORE/RATIONALE (skip reasoning preamble)
+                matches = list(re.finditer(r'SCORE:\s*(\d)', text))
+                score_val = int(matches[-1].group(1)) if matches else 3
+                last_rat = list(re.finditer(r'RATIONALE:\s*', text))
+                if last_rat:
+                    rationale = text[last_rat[-1].end():].strip()
+                else:
                     rationale = text
+                # Clean up: remove any trailing prompt echoes
+                rationale = rationale.split('\n\nReply ONLY:')[0].strip()
+                rationale = rationale.split('\n\nScore 1-5')[0].strip()
                 return score_val, f"{score_val}/5 — {rationale[:300]}"
 
         except (HTTPError, OSError) as e:
