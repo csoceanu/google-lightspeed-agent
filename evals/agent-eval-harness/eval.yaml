@@ -24,7 +24,7 @@ runner:
     A2A_INSECURE_TLS: "$A2A_INSECURE_TLS"
 
 models:
-  judge: "gpt-oss-120b"
+  judge: "llama-scout-17b"
 
 mlflow:
   experiment: lightspeed-agent-aeh-evals
@@ -112,5 +112,6 @@ judges:
       Agent response: {{ outputs }}
       Behavioral constraints: {{ annotations }}
 
-      Score as PASS only if ALL constraints are met. If any constraint
-      is violated, score as FAIL and explain which one.
+      Score 5 if ALL constraints are fully met, 1 if none are met.
+      Score 2-4 for partial compliance. Explain which constraints
+      were met and which were violated.
