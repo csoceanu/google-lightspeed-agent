@@ -25,7 +25,12 @@ from urllib.request import Request, urlopen
 
 
 def extract_final_answer(text: str) -> str:
-    """Extract only the user-facing answer, stripping Gemini reasoning blocks."""
+    """Extract only the user-facing answer, stripping Gemini reasoning blocks.
+
+    Gemini models wrap internal chain-of-thought in /*REASONING*/ and
+    /*PLANNING*/ blocks. Only the content after /*FINAL_ANSWER*/ is what
+    the user sees — everything before it is internal and should not be scored.
+    """
     if "/*FINAL_ANSWER*/" in text:
         _, _, answer = text.partition("/*FINAL_ANSWER*/")
         return answer.strip()

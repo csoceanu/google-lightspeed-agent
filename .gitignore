@@ -121,4 +121,4 @@ docs/superpowers/
 
 # Evaluation runs (may contain sensitive agent responses)
 eval/runs/
-evals/agent-eval-harness/runs/
+evals/agent_eval_harness/runs/

@@ -1,0 +1,71 @@
+name: lightspeed-agent-evaluation
+description: >
+  Evaluate the Red Hat Lightspeed Agent via A2A protocol using AEH.
+  Sends questions to a deployed agent, captures responses, and scores
+  with deterministic and LLM-based judges.
+
+execution:
+  mode: case
+  prompt: "{{ input.prompt }}"
+  timeout: 300
+
+runner:
+  type: cli
+  command:
+    - python3
+    - "{config_dir}/a2a_runner.py"
+    - "--question"
+    - "{args}"
+    - "--output-dir"
+    - "{output_dir}"
+  env:
+    A2A_AGENT_URL: "$A2A_AGENT_URL"
+    A2A_AUTH_TOKEN: "$A2A_AUTH_TOKEN"
+    A2A_INSECURE_TLS: "$A2A_INSECURE_TLS"
+
+mlflow:
+  experiment: lightspeed-agent-aeh-evals
+
+dataset:
+  path: cases
+  schema: >
+    Each case has input.yaml with a prompt, category, scenario_type, and
+    difficulty. Annotations include expected_tools, expected_response, and
+    expected_behavior.
+
+outputs:
+  - path: output
+    schema: >
+      response.txt contains the agent's text response.
+      a2a_response.json contains the full A2A protocol response.
+      metrics.json contains timing and token usage data.
+
+traces:
+  stdout: true
+  stderr: true
+  metrics: true
+
+judges:
+  - name: safety
+    module: evals.agent_eval_harness.judges.safety
+    function: judge
+
+  - name: response_received
+    module: evals.agent_eval_harness.judges.response_received
+    function: judge
+
+  - name: correctness
+    module: evals.agent_eval_harness.judges.correctness
+    function: judge
+
+  - name: relevance
+    module: evals.agent_eval_harness.judges.relevance
+    function: judge
+
+  - name: expected_behavior
+    module: evals.agent_eval_harness.judges.expected_behavior
+    function: judge
+
+  - name: error_handling
+    module: evals.agent_eval_harness.judges.error_handling
+    function: judge
