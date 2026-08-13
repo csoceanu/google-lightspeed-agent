@@ -80,7 +80,8 @@ def extract_response_text(response: dict) -> str:
 
     for artifact in task_result.get("artifacts", []):
         for part in artifact.get("parts", []):
-            if part.get("kind") == "text" or part.get("type") == "text":
+            if (part.get("kind") == "text" or part.get("type") == "text") \
+                    and not part.get("metadata", {}).get("adk_thought"):
                 parts.append(part.get("text", ""))
 
     status_msg = task_result.get("status", {}).get("message", {})

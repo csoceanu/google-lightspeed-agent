@@ -1,0 +1,7 @@
+expected_behavior:
+- The agent should return the exact tool name get_cve, which is the tool for retrieving detailed information about a single
+  specific CVE.
+expected_response: get_cve
+expected_tools:
+- vulnerability__get_cve
+question_type: exact_match

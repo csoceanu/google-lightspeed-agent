@@ -1,0 +1,4 @@
+category: vulnerability
+difficulty: easy
+prompt: Which tool would you use to get detailed information about a specific CVE such as CVE-2024-6387?
+scenario_type: single_tool

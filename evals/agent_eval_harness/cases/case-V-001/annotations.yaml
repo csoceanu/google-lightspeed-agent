@@ -1,9 +1,7 @@
-expected_tools:
-  - list_skills
-  - load_skill
-  - vulnerability__get_cves
-  - vulnerability__get_openapi
-expected_response: "A ranked list of up to 5 critical CVEs with CVE ID, CVSS score, and affected system count."
 expected_behavior:
-  - "Must list up to 5 critical CVEs ranked by exposed systems"
-  - "Must not claim to patch or remediate systems"
+- The agent should call get_cve_systems with CVE-2024-6387 to determine if any systems are affected and return the list of
+  impacted hosts.
+expected_response: 'yes'
+expected_tools:
+- vulnerability__get_cve_systems
+question_type: binary

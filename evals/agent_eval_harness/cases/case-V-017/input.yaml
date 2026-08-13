@@ -1,0 +1,4 @@
+category: vulnerability
+difficulty: easy
+prompt: Which of the following are valid vulnerability management tools?
+scenario_type: single_tool

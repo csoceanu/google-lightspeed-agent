@@ -1,0 +1,7 @@
+expected_behavior:
+- The agent should identify get_cve as the correct tool for retrieving detailed information about a single specific CVE by
+  its ID.
+expected_response: get_cve
+expected_tools:
+- vulnerability__get_cve
+question_type: single_select

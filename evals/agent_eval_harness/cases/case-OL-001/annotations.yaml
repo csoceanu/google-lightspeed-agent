@@ -1,0 +1,5 @@
+expected_behavior:
+- 'The agent should list the severity levels in the correct descending order: Critical > Important > Moderate > Low.'
+expected_response: '[''Critical'', ''Important'', ''Moderate'', ''Low'']'
+expected_tools: []
+question_type: ordered_list

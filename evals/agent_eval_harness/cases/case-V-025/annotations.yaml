@@ -1,0 +1,7 @@
+expected_behavior:
+- The agent should describe using get_cves with severity set to critical and known_exploit filter enabled, mentioning both
+  the tool name and filtering criteria.
+expected_response: '[''get_cves'', ''critical'', ''exploit'']'
+expected_tools:
+- vulnerability__get_cves
+question_type: substring_match
