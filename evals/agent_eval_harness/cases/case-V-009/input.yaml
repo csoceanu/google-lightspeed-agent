@@ -1,4 +1,4 @@
-category: vulnerability
+category: inventory
 difficulty: easy
-prompt: Which tool would you use to get detailed information about a specific CVE such as CVE-2024-6387?
+prompt: "Which tool should be used to find a host named 'web-server-prod-01' in the inventory?"
 scenario_type: single_tool

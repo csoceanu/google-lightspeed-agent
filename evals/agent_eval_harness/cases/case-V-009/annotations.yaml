@@ -1,7 +1,6 @@
-expected_behavior:
-- The agent should identify get_cve as the correct tool for retrieving detailed information about a single specific CVE by
-  its ID.
-expected_response: get_cve
 expected_tools:
-- vulnerability__get_cve
+  - inventory__find_host_by_name
+expected_response: find_host_by_name
+expected_behavior:
+  - "Must identify find_host_by_name as the correct tool for looking up hosts by display name"
 question_type: single_select

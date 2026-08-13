@@ -1,4 +1,9 @@
 category: vulnerability
 difficulty: easy
-prompt: Which of the following are valid vulnerability management tools?
+prompt: |
+  Which of the following are valid vulnerability management tools?
+  A) get_cve
+  B) get_cve_systems
+  C) create_vuln_playbook
+  D) get_system_cves
 scenario_type: single_tool

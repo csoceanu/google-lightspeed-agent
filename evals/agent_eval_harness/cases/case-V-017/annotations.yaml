@@ -1,6 +1,14 @@
-expected_behavior:
-- The agent should identify get_cve, get_cve_systems, and get_system_cves as vulnerability management tools. create_vuln_playbook
-  belongs to the remediations domain, not vulnerability management.
-expected_response: '[''get_cve'', ''get_cve_systems'', ''get_system_cves'']'
 expected_tools: []
+expected_response:
+  - get_cve
+  - get_cve_systems
+  - get_system_cves
+expected_behavior:
+  - "Must identify get_cve, get_cve_systems, and get_system_cves as vulnerability management tools"
+  - "Must not include create_vuln_playbook (belongs to remediations domain)"
 question_type: multiple_select
+options:
+  - get_cve
+  - get_cve_systems
+  - create_vuln_playbook
+  - get_system_cves
