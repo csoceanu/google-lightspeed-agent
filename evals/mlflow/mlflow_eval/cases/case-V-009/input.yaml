@@ -1,0 +1,4 @@
+category: inventory
+difficulty: easy
+prompt: "Which tool should be used to find a host named 'web-server-prod-01' in the inventory?"
+scenario_type: single_tool

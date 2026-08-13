@@ -1,0 +1,6 @@
+expected_behavior:
+- "Must identify find_host_by_name as the correct tool for looking up hosts by display name"
+expected_response: 'find_host_by_name'
+expected_tools:
+- inventory__find_host_by_name
+question_type: single_select

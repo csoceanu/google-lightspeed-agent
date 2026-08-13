@@ -1,0 +1,17 @@
+expected_tools:
+  - vulnerability__get_cve
+  - vulnerability__explain_cves
+expected_response: >
+  CVE-2024-6387 is a critical vulnerability in OpenSSH known as
+  regreSSHion. It is a signal handler race condition that allows
+  unauthenticated remote code execution as root on glibc-based
+  Linux systems.
+expected_behavior:
+  - "The agent should look up CVE-2024-6387 details and provide a clear explanation"
+  - "Must mention the vulnerability severity and potential impact on RHEL systems"
+question_type: free_form
+note: >
+  This test is data-dependent. The expected response assumes CVE-2024-6387
+  exists in the MCP data. In production, the LLM correctness judge evaluates
+  whether the agent's explanation is coherent and factually grounded in
+  whatever data the MCP returns.

@@ -19,6 +19,8 @@ build/
 venv/
 env/
 
+dependencies/
+
 # IDE
 .idea/
 .vscode/
@@ -34,6 +36,10 @@ coverage.xml
 
 # Output files
 eval_results.json
+
+# MLflow
+mlflow.db
+mlruns/
 
 # Resources
 resources/

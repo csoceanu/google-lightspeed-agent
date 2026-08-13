@@ -1,0 +1,5 @@
+category: vulnerability
+difficulty: easy
+prompt: 'Rank the following CVE severity levels from most severe to least severe:
+  Moderate, Critical, Low, Important.'
+scenario_type: single_tool

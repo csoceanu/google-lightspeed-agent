@@ -1,0 +1,1441 @@
+{
+  "_description": "Synthetic MCP tool responses that make eval_dataset.json expected answers true. Field names and nesting match the real Red Hat Insights APIs exactly. The mock API server (mock_insights_api.py) returns these when the agent calls each tool.",
+
+  "vulnerability": {
+    "cves": {
+      "CVE-2024-6387": {
+        "id": "CVE-2024-6387",
+        "type": "cve",
+        "attributes": {
+          "cvss_score": 8.1,
+          "cvss3_score": 8.1,
+          "cvss2_score": null,
+          "impact": "Critical",
+          "public_date": "2024-07-01T00:00:00Z",
+          "modified_date": "2024-08-15T00:00:00Z",
+          "synopsis": "OpenSSH regreSSHion Remote Code Execution",
+          "description": "A signal handler race condition in OpenSSH's server (sshd) allows unauthenticated remote code execution as root on glibc-based Linux systems.",
+          "systems_affected": 3,
+          "advisories_list": ["RHSA-2024:4312"],
+          "known_exploit": true,
+          "advisory_available": true,
+          "rule_presence": false,
+          "business_risk": "Critical",
+          "status": "Affected",
+          "cvss3_scoring_vector": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:H/A:H",
+          "cvss2_scoring_vector": null
+        }
+      },
+      "CVE-2024-3094": {
+        "id": "CVE-2024-3094",
+        "type": "cve",
+        "attributes": {
+          "cvss_score": 10.0,
+          "cvss3_score": 10.0,
+          "cvss2_score": null,
+          "impact": "Critical",
+          "public_date": "2024-03-29T00:00:00Z",
+          "modified_date": "2024-04-15T00:00:00Z",
+          "synopsis": "XZ Utils Backdoor",
+          "description": "Malicious code was discovered in the upstream tarballs of xz-utils, starting from version 5.6.0, allowing unauthorized remote access.",
+          "systems_affected": 2,
+          "advisories_list": ["RHSA-2024:1640"],
+          "known_exploit": true,
+          "advisory_available": true,
+          "rule_presence": false,
+          "business_risk": "Critical",
+          "status": "Affected",
+          "cvss3_scoring_vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:H/A:H",
+          "cvss2_scoring_vector": null
+        }
+      },
+      "CVE-2024-1086": {
+        "id": "CVE-2024-1086",
+        "type": "cve",
+        "attributes": {
+          "cvss_score": 7.8,
+          "cvss3_score": 7.8,
+          "cvss2_score": null,
+          "impact": "Critical",
+          "public_date": "2024-01-31T00:00:00Z",
+          "modified_date": "2024-03-20T00:00:00Z",
+          "synopsis": "Linux Kernel nf_tables Use-After-Free",
+          "description": "A use-after-free vulnerability in the Linux kernel's netfilter nf_tables component allows local privilege escalation.",
+          "systems_affected": 4,
+          "advisories_list": ["RHSA-2024:0897"],
+          "known_exploit": true,
+          "advisory_available": true,
+          "rule_presence": false,
+          "business_risk": "High",
+          "status": "Affected",
+          "cvss3_scoring_vector": "CVSS:3.1/AV:L/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H",
+          "cvss2_scoring_vector": null
+        }
+      },
+      "CVE-2024-1234": {
+        "id": "CVE-2024-1234",
+        "type": "cve",
+        "attributes": {
+          "cvss_score": 7.5,
+          "cvss3_score": 7.5,
+          "cvss2_score": 5.0,
+          "impact": "Important",
+          "public_date": "2024-02-15T00:00:00Z",
+          "modified_date": "2024-03-01T00:00:00Z",
+          "synopsis": "Example Application Vulnerability",
+          "description": "A vulnerability in an example application component that allows unauthorized data access.",
+          "systems_affected": 2,
+          "advisories_list": ["RHSA-2024:0456"],
+          "known_exploit": false,
+          "advisory_available": true,
+          "rule_presence": false,
+          "business_risk": "High",
+          "status": "Affected",
+          "cvss3_scoring_vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:N",
+          "cvss2_scoring_vector": "AV:N/AC:L/Au:N/C:P/I:N/A:N"
+        }
+      },
+      "CVE-2024-21626": {
+        "id": "CVE-2024-21626",
+        "type": "cve",
+        "attributes": {
+          "cvss_score": 8.6,
+          "cvss3_score": 8.6,
+          "cvss2_score": null,
+          "impact": "Important",
+          "public_date": "2024-01-31T00:00:00Z",
+          "modified_date": "2024-02-20T00:00:00Z",
+          "synopsis": "runc Container Escape via fd Leak",
+          "description": "A container escape via file descriptor leak in runc allowing host filesystem access.",
+          "systems_affected": 2,
+          "advisories_list": ["RHSA-2024:0670"],
+          "known_exploit": true,
+          "advisory_available": true,
+          "rule_presence": false,
+          "business_risk": "High",
+          "status": "Affected",
+          "cvss3_scoring_vector": "CVSS:3.1/AV:L/AC:L/PR:N/UI:R/S:C/C:H/I:H/A:H",
+          "cvss2_scoring_vector": null
+        }
+      }
+    },
+
+    "systems": [
+      {
+        "id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+        "type": "system",
+        "attributes": {
+          "display_name": "web-server-prod-01.example.com",
+          "os": "RHEL 9.2",
+          "rhel_version": "9.2",
+          "updated": "2026-08-01T10:00:00Z",
+          "group_name": "production",
+          "cves_total": 4,
+          "last_evaluation": "2026-08-01T10:00:00Z"
+        }
+      },
+      {
+        "id": "b2c3d4e5-f6a7-8901-bcde-f12345678901",
+        "type": "system",
+        "attributes": {
+          "display_name": "db-server-prod-01.example.com",
+          "os": "RHEL 8.8",
+          "rhel_version": "8.8",
+          "updated": "2026-08-01T09:30:00Z",
+          "group_name": "production",
+          "cves_total": 4,
+          "last_evaluation": "2026-08-01T09:30:00Z"
+        }
+      },
+      {
+        "id": "c3d4e5f6-a7b8-9012-cdef-123456789012",
+        "type": "system",
+        "attributes": {
+          "display_name": "app-server-staging-02.example.com",
+          "os": "RHEL 9.4",
+          "rhel_version": "9.4",
+          "updated": "2026-08-01T11:00:00Z",
+          "group_name": "staging",
+          "cves_total": 3,
+          "last_evaluation": "2026-08-01T11:00:00Z"
+        }
+      },
+      {
+        "id": "d4e5f6a7-b8c9-0123-defa-234567890123",
+        "type": "system",
+        "attributes": {
+          "display_name": "app-worker-staging-03.example.com",
+          "os": "RHEL 8.8",
+          "rhel_version": "8.8",
+          "updated": "2026-07-28T06:00:00Z",
+          "group_name": "staging",
+          "cves_total": 2,
+          "last_evaluation": "2026-07-28T06:00:00Z"
+        }
+      }
+    ],
+
+    "cve_to_systems": {
+      "CVE-2024-6387": [
+        "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+        "b2c3d4e5-f6a7-8901-bcde-f12345678901",
+        "c3d4e5f6-a7b8-9012-cdef-123456789012"
+      ],
+      "CVE-2024-3094": [
+        "b2c3d4e5-f6a7-8901-bcde-f12345678901",
+        "d4e5f6a7-b8c9-0123-defa-234567890123"
+      ],
+      "CVE-2024-1086": [
+        "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+        "b2c3d4e5-f6a7-8901-bcde-f12345678901",
+        "c3d4e5f6-a7b8-9012-cdef-123456789012",
+        "d4e5f6a7-b8c9-0123-defa-234567890123"
+      ],
+      "CVE-2024-1234": [
+        "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+        "b2c3d4e5-f6a7-8901-bcde-f12345678901"
+      ],
+      "CVE-2024-21626": [
+        "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+        "c3d4e5f6-a7b8-9012-cdef-123456789012"
+      ]
+    },
+
+    "system_to_cves": {
+      "a1b2c3d4-e5f6-7890-abcd-ef1234567890": ["CVE-2024-6387", "CVE-2024-1086", "CVE-2024-1234", "CVE-2024-21626"],
+      "b2c3d4e5-f6a7-8901-bcde-f12345678901": ["CVE-2024-6387", "CVE-2024-3094", "CVE-2024-1086", "CVE-2024-1234"],
+      "c3d4e5f6-a7b8-9012-cdef-123456789012": ["CVE-2024-6387", "CVE-2024-1086", "CVE-2024-21626"],
+      "d4e5f6a7-b8c9-0123-defa-234567890123": ["CVE-2024-3094", "CVE-2024-1086"]
+    }
+  },
+
+  "inventory": {
+    "hosts": [
+      {
+        "id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+        "insights_id": "11111111-1111-1111-1111-111111111111",
+        "subscription_manager_id": "22222222-1111-1111-1111-111111111111",
+        "satellite_id": null,
+        "bios_uuid": "33333333-1111-1111-1111-111111111111",
+        "fqdn": "web-server-prod-01.example.com",
+        "display_name": "web-server-prod-01.example.com",
+        "provider_type": "aws",
+        "provider_id": "i-0a1b2c3d4e5f60001",
+        "account": "1234567",
+        "org_id": "7654321",
+        "ip_addresses": ["10.0.1.101"],
+        "mac_addresses": ["0a:1b:2c:3d:4e:01"],
+        "ansible_host": null,
+        "created": "2025-01-15T08:00:00Z",
+        "updated": "2026-08-01T10:00:00Z",
+        "stale_timestamp": "2026-08-04T10:00:00Z",
+        "stale_warning_timestamp": "2026-08-11T10:00:00Z",
+        "culled_timestamp": "2026-08-18T10:00:00Z",
+        "reporter": "puptoo",
+        "per_reporter_staleness": {},
+        "groups": [{"id": "grp-001", "name": "production"}],
+        "facts": [],
+        "tags": [
+          {"namespace": "insights-client", "key": "env", "value": "production"},
+          {"namespace": "insights-client", "key": "role", "value": "webserver"}
+        ],
+        "system_profile": {
+          "arch": "x86_64",
+          "os_release": "9.2",
+          "os_kernel_version": "5.14.0-284.el9.x86_64",
+          "number_of_cpus": 4,
+          "number_of_sockets": 1,
+          "cores_per_socket": 2,
+          "system_memory_bytes": 17179869184,
+          "infrastructure_type": "virtual",
+          "infrastructure_vendor": "aws",
+          "bios_vendor": "Amazon EC2",
+          "bios_version": "1.0",
+          "cpu_model": "Intel Xeon E5-2686 v4",
+          "network_interfaces": [
+            {
+              "ipv4_addresses": ["10.0.1.101"],
+              "ipv6_addresses": [],
+              "mac_address": "0a:1b:2c:3d:4e:01",
+              "mtu": 9001,
+              "name": "eth0",
+              "state": "UP",
+              "type": "ether"
+            }
+          ],
+          "disk_devices": [
+            {"device": "/dev/xvda", "label": "", "mount_point": "/", "type": "xfs"}
+          ],
+          "installed_packages": [
+            "openssh-server-8.7p1-34.el9.x86_64",
+            "kernel-5.14.0-284.el9.x86_64",
+            "example-lib-1.2.3-1.el9.x86_64",
+            "runc-1.1.9-1.el9.x86_64"
+          ],
+          "enabled_services": ["sshd", "chronyd", "insights-client", "httpd"],
+          "installed_services": ["sshd", "chronyd", "httpd"],
+          "yum_repos": [
+            {"id": "rhel-9-for-x86_64-baseos-rpms", "name": "Red Hat Enterprise Linux 9 for x86_64 - BaseOS (RPMs)", "enabled": true, "base_url": "https://cdn.redhat.com/content/dist/rhel9/9/x86_64/baseos/os"},
+            {"id": "rhel-9-for-x86_64-appstream-rpms", "name": "Red Hat Enterprise Linux 9 for x86_64 - AppStream (RPMs)", "enabled": true, "base_url": "https://cdn.redhat.com/content/dist/rhel9/9/x86_64/appstream/os"}
+          ],
+          "dnf_modules": [
+            {"name": "nodejs", "stream": "18"}
+          ],
+          "operating_system": {"major": 9, "minor": 2, "name": "RHEL"},
+          "rhsm": {"version": "9.2"},
+          "cloud_provider": "aws",
+          "system_purpose": {"role": "RHEL Server", "sla": "Premium", "usage": "Production"},
+          "insights_client_version": "3.2.4-1.el9",
+          "insights_egg_version": "3.2.4-1.el9",
+          "captured_date": "2026-08-01T10:00:00Z",
+          "satellite_managed": false,
+          "katello_agent_running": false
+        }
+      },
+      {
+        "id": "b2c3d4e5-f6a7-8901-bcde-f12345678901",
+        "insights_id": "11111111-2222-2222-2222-222222222222",
+        "subscription_manager_id": "22222222-2222-2222-2222-222222222222",
+        "satellite_id": null,
+        "bios_uuid": "33333333-2222-2222-2222-222222222222",
+        "fqdn": "db-server-prod-01.example.com",
+        "display_name": "db-server-prod-01.example.com",
+        "provider_type": "aws",
+        "provider_id": "i-0a1b2c3d4e5f60002",
+        "account": "1234567",
+        "org_id": "7654321",
+        "ip_addresses": ["10.0.1.102"],
+        "mac_addresses": ["0a:1b:2c:3d:4e:02"],
+        "ansible_host": null,
+        "created": "2024-06-10T12:00:00Z",
+        "updated": "2026-08-01T09:30:00Z",
+        "stale_timestamp": "2026-08-04T09:30:00Z",
+        "stale_warning_timestamp": "2026-08-11T09:30:00Z",
+        "culled_timestamp": "2026-08-18T09:30:00Z",
+        "reporter": "puptoo",
+        "per_reporter_staleness": {},
+        "groups": [{"id": "grp-001", "name": "production"}],
+        "facts": [],
+        "tags": [
+          {"namespace": "insights-client", "key": "env", "value": "production"},
+          {"namespace": "insights-client", "key": "role", "value": "database"}
+        ],
+        "system_profile": {
+          "arch": "x86_64",
+          "os_release": "8.8",
+          "os_kernel_version": "4.18.0-477.el8.x86_64",
+          "number_of_cpus": 8,
+          "number_of_sockets": 1,
+          "cores_per_socket": 4,
+          "system_memory_bytes": 34359738368,
+          "infrastructure_type": "virtual",
+          "infrastructure_vendor": "aws",
+          "bios_vendor": "Amazon EC2",
+          "bios_version": "1.0",
+          "cpu_model": "Intel Xeon E5-2686 v4",
+          "network_interfaces": [
+            {
+              "ipv4_addresses": ["10.0.1.102"],
+              "ipv6_addresses": [],
+              "mac_address": "0a:1b:2c:3d:4e:02",
+              "mtu": 9001,
+              "name": "eth0",
+              "state": "UP",
+              "type": "ether"
+            }
+          ],
+          "disk_devices": [
+            {"device": "/dev/xvda", "label": "", "mount_point": "/", "type": "xfs"},
+            {"device": "/dev/xvdb", "label": "data", "mount_point": "/var/lib/pgsql", "type": "xfs"}
+          ],
+          "installed_packages": [
+            "openssh-server-8.0p1-17.el8.x86_64",
+            "kernel-4.18.0-477.el8.x86_64",
+            "xz-libs-5.6.0-1.el8.x86_64",
+            "example-lib-1.2.3-1.el8.x86_64"
+          ],
+          "enabled_services": ["sshd", "chronyd", "insights-client", "postgresql"],
+          "installed_services": ["sshd", "chronyd", "postgresql"],
+          "yum_repos": [
+            {"id": "rhel-8-for-x86_64-baseos-rpms", "name": "Red Hat Enterprise Linux 8 for x86_64 - BaseOS (RPMs)", "enabled": true, "base_url": "https://cdn.redhat.com/content/dist/rhel8/8/x86_64/baseos/os"},
+            {"id": "rhel-8-for-x86_64-appstream-rpms", "name": "Red Hat Enterprise Linux 8 for x86_64 - AppStream (RPMs)", "enabled": true, "base_url": "https://cdn.redhat.com/content/dist/rhel8/8/x86_64/appstream/os"}
+          ],
+          "dnf_modules": [],
+          "operating_system": {"major": 8, "minor": 8, "name": "RHEL"},
+          "rhsm": {"version": "8.8"},
+          "cloud_provider": "aws",
+          "system_purpose": {"role": "RHEL Server", "sla": "Premium", "usage": "Production"},
+          "insights_client_version": "3.1.8-1.el8",
+          "insights_egg_version": "3.1.8-1.el8",
+          "captured_date": "2026-08-01T09:30:00Z",
+          "satellite_managed": false,
+          "katello_agent_running": false
+        }
+      },
+      {
+        "id": "c3d4e5f6-a7b8-9012-cdef-123456789012",
+        "insights_id": "11111111-3333-3333-3333-333333333333",
+        "subscription_manager_id": "22222222-3333-3333-3333-333333333333",
+        "satellite_id": null,
+        "bios_uuid": "33333333-3333-3333-3333-333333333333",
+        "fqdn": "app-server-staging-02.example.com",
+        "display_name": "app-server-staging-02.example.com",
+        "provider_type": "azure",
+        "provider_id": "azure-vm-0003",
+        "account": "1234567",
+        "org_id": "7654321",
+        "ip_addresses": ["10.0.2.103"],
+        "mac_addresses": ["0a:1b:2c:3d:4e:03"],
+        "ansible_host": null,
+        "created": "2025-06-01T09:00:00Z",
+        "updated": "2026-08-01T11:00:00Z",
+        "stale_timestamp": "2026-08-04T11:00:00Z",
+        "stale_warning_timestamp": "2026-08-11T11:00:00Z",
+        "culled_timestamp": "2026-08-18T11:00:00Z",
+        "reporter": "puptoo",
+        "per_reporter_staleness": {},
+        "groups": [{"id": "grp-002", "name": "staging"}],
+        "facts": [],
+        "tags": [
+          {"namespace": "insights-client", "key": "env", "value": "staging"},
+          {"namespace": "insights-client", "key": "role", "value": "app"}
+        ],
+        "system_profile": {
+          "arch": "x86_64",
+          "os_release": "9.4",
+          "os_kernel_version": "5.14.0-427.el9.x86_64",
+          "number_of_cpus": 2,
+          "number_of_sockets": 1,
+          "cores_per_socket": 2,
+          "system_memory_bytes": 8589934592,
+          "infrastructure_type": "virtual",
+          "infrastructure_vendor": "azure",
+          "bios_vendor": "Microsoft Corporation",
+          "bios_version": "Hyper-V UEFI",
+          "cpu_model": "AMD EPYC 7763",
+          "network_interfaces": [
+            {
+              "ipv4_addresses": ["10.0.2.103"],
+              "ipv6_addresses": [],
+              "mac_address": "0a:1b:2c:3d:4e:03",
+              "mtu": 1500,
+              "name": "eth0",
+              "state": "UP",
+              "type": "ether"
+            }
+          ],
+          "disk_devices": [
+            {"device": "/dev/sda", "label": "", "mount_point": "/", "type": "xfs"}
+          ],
+          "installed_packages": [
+            "openssh-server-8.7p1-34.el9.x86_64",
+            "kernel-5.14.0-427.el9.x86_64",
+            "runc-1.1.9-1.el9.x86_64"
+          ],
+          "enabled_services": ["sshd", "chronyd", "insights-client"],
+          "installed_services": ["sshd", "chronyd"],
+          "yum_repos": [
+            {"id": "rhel-9-for-x86_64-baseos-rpms", "name": "Red Hat Enterprise Linux 9 for x86_64 - BaseOS (RPMs)", "enabled": true, "base_url": "https://cdn.redhat.com/content/dist/rhel9/9/x86_64/baseos/os"},
+            {"id": "rhel-9-for-x86_64-appstream-rpms", "name": "Red Hat Enterprise Linux 9 for x86_64 - AppStream (RPMs)", "enabled": true, "base_url": "https://cdn.redhat.com/content/dist/rhel9/9/x86_64/appstream/os"}
+          ],
+          "dnf_modules": [],
+          "operating_system": {"major": 9, "minor": 4, "name": "RHEL"},
+          "rhsm": {"version": "9.4"},
+          "cloud_provider": "azure",
+          "system_purpose": {"role": "RHEL Server", "sla": "Standard", "usage": "Development/Test"},
+          "insights_client_version": "3.2.4-1.el9",
+          "insights_egg_version": "3.2.4-1.el9",
+          "captured_date": "2026-08-01T11:00:00Z",
+          "satellite_managed": false,
+          "katello_agent_running": false
+        }
+      },
+      {
+        "id": "d4e5f6a7-b8c9-0123-defa-234567890123",
+        "insights_id": "11111111-4444-4444-4444-444444444444",
+        "subscription_manager_id": "22222222-4444-4444-4444-444444444444",
+        "satellite_id": null,
+        "bios_uuid": "33333333-4444-4444-4444-444444444444",
+        "fqdn": "app-worker-staging-03.example.com",
+        "display_name": "app-worker-staging-03.example.com",
+        "provider_type": "gcp",
+        "provider_id": "gcp-instance-0004",
+        "account": "1234567",
+        "org_id": "7654321",
+        "ip_addresses": ["10.0.2.104"],
+        "mac_addresses": ["0a:1b:2c:3d:4e:04"],
+        "ansible_host": null,
+        "created": "2025-03-20T14:00:00Z",
+        "updated": "2026-07-28T06:00:00Z",
+        "stale_timestamp": "2026-07-31T06:00:00Z",
+        "stale_warning_timestamp": "2026-08-07T06:00:00Z",
+        "culled_timestamp": "2026-08-14T06:00:00Z",
+        "reporter": "puptoo",
+        "per_reporter_staleness": {},
+        "groups": [{"id": "grp-002", "name": "staging"}],
+        "facts": [],
+        "tags": [
+          {"namespace": "insights-client", "key": "env", "value": "staging"},
+          {"namespace": "insights-client", "key": "role", "value": "worker"}
+        ],
+        "system_profile": {
+          "arch": "x86_64",
+          "os_release": "8.8",
+          "os_kernel_version": "4.18.0-477.el8.x86_64",
+          "number_of_cpus": 4,
+          "number_of_sockets": 1,
+          "cores_per_socket": 2,
+          "system_memory_bytes": 16106127360,
+          "infrastructure_type": "virtual",
+          "infrastructure_vendor": "gcp",
+          "bios_vendor": "Google",
+          "bios_version": "1.0",
+          "cpu_model": "Intel Xeon Gold 6354",
+          "network_interfaces": [
+            {
+              "ipv4_addresses": ["10.0.2.104"],
+              "ipv6_addresses": [],
+              "mac_address": "0a:1b:2c:3d:4e:04",
+              "mtu": 1460,
+              "name": "eth0",
+              "state": "UP",
+              "type": "ether"
+            }
+          ],
+          "disk_devices": [
+            {"device": "/dev/sda", "label": "", "mount_point": "/", "type": "ext4"}
+          ],
+          "installed_packages": [
+            "kernel-4.18.0-477.el8.x86_64",
+            "xz-libs-5.6.0-1.el8.x86_64"
+          ],
+          "enabled_services": ["sshd", "chronyd", "insights-client"],
+          "installed_services": ["sshd", "chronyd"],
+          "yum_repos": [
+            {"id": "rhel-8-for-x86_64-baseos-rpms", "name": "Red Hat Enterprise Linux 8 for x86_64 - BaseOS (RPMs)", "enabled": true, "base_url": "https://cdn.redhat.com/content/dist/rhel8/8/x86_64/baseos/os"},
+            {"id": "rhel-8-for-x86_64-appstream-rpms", "name": "Red Hat Enterprise Linux 8 for x86_64 - AppStream (RPMs)", "enabled": true, "base_url": "https://cdn.redhat.com/content/dist/rhel8/8/x86_64/appstream/os"}
+          ],
+          "dnf_modules": [],
+          "operating_system": {"major": 8, "minor": 8, "name": "RHEL"},
+          "rhsm": {"version": "8.8"},
+          "cloud_provider": "gcp",
+          "system_purpose": {"role": "RHEL Server", "sla": "Standard", "usage": "Development/Test"},
+          "insights_client_version": "3.1.8-1.el8",
+          "insights_egg_version": "3.1.8-1.el8",
+          "captured_date": "2026-07-28T06:00:00Z",
+          "satellite_managed": false,
+          "katello_agent_running": false
+        }
+      }
+    ]
+  },
+
+  "advisor": {
+    "recommendations_stats": {
+      "total": 42,
+      "total_risk": {"1": 10, "2": 15, "3": 12, "4": 5},
+      "category": {
+        "Availability": 8,
+        "Performance": 9,
+        "Security": 15,
+        "Stability": 10
+      }
+    },
+
+    "active_rules": [
+      {
+        "rule_id": "network_firewall_zone_drift_enabled|ENABLE_FIREWALL_ZONE_DRIFTING_WARN",
+        "created_at": "2024-03-15T09:45:12.123456Z",
+        "updated_at": "2026-06-20T14:22:33.987654Z",
+        "description": "Firewall zone drifting is enabled, which may lead to unexpected network access.",
+        "active": true,
+        "category": {"id": 2, "name": "Security"},
+        "impact": {"name": "Unexpected Network Access", "impact": 2},
+        "likelihood": 3,
+        "node_id": "12345",
+        "tags": "security firewall networking zone",
+        "playbook_count": 1,
+        "reboot_required": false,
+        "publish_date": "2024-03-01T12:00:00Z",
+        "summary": "Firewall zone drifting is enabled, which may lead to unexpected network access.",
+        "generic": "When firewall zone drifting is enabled, network interfaces may move between zones unexpectedly, potentially exposing services to untrusted networks.",
+        "reason": "This host has firewalld configured with AllowZoneDrifting=yes, which is deprecated and may cause unexpected network access patterns.",
+        "more_info": "",
+        "impacted_systems_count": 2,
+        "reports_shown": true,
+        "rule_status": "enabled",
+        "resolution_set": [
+          {
+            "system_type": 105,
+            "resolution": "Red Hat recommends setting AllowZoneDrifting=no in /etc/firewalld/firewalld.conf and restarting the firewalld service.",
+            "resolution_risk": {"name": "Update Configuration", "risk": 2},
+            "has_playbook": true
+          }
+        ],
+        "total_risk": 2,
+        "hosts_acked_count": 0,
+        "rating": 0
+      },
+      {
+        "rule_id": "sshd_config_permissions|SSHD_CONFIG_PERMISSIONS_WARN",
+        "created_at": "2024-01-10T11:30:00.000000Z",
+        "updated_at": "2026-05-15T08:00:00.000000Z",
+        "description": "The /etc/ssh/sshd_config file has permissions that are more permissive than recommended.",
+        "active": true,
+        "category": {"id": 2, "name": "Security"},
+        "impact": {"name": "Security Configuration Issue", "impact": 3},
+        "likelihood": 4,
+        "node_id": "23456",
+        "tags": "security ssh sshd configuration permissions",
+        "playbook_count": 1,
+        "reboot_required": false,
+        "publish_date": "2024-01-05T10:00:00Z",
+        "summary": "The /etc/ssh/sshd_config file has permissions that are more permissive than recommended.",
+        "generic": "The sshd_config file should have restrictive permissions to prevent unauthorized users from reading or modifying the SSH server configuration.",
+        "reason": "This host has /etc/ssh/sshd_config with permissions 0644, which is more permissive than the recommended 0600.",
+        "more_info": "For more information, see the RHEL Security Guide section on SSH hardening.",
+        "impacted_systems_count": 3,
+        "reports_shown": true,
+        "rule_status": "enabled",
+        "resolution_set": [
+          {
+            "system_type": 105,
+            "resolution": "Red Hat recommends setting the permissions of /etc/ssh/sshd_config to 0600 by running: chmod 0600 /etc/ssh/sshd_config",
+            "resolution_risk": {"name": "Update Permissions", "risk": 1},
+            "has_playbook": true
+          }
+        ],
+        "total_risk": 3,
+        "hosts_acked_count": 0,
+        "rating": 4
+      },
+      {
+        "rule_id": "kernel_panic_on_oops|KERNEL_PANIC_ON_OOPS_ENABLED_WARN",
+        "created_at": "2023-11-03T08:33:48.373300Z",
+        "updated_at": "2026-04-22T10:33:07.549451Z",
+        "description": "kernel.panic_on_oops is enabled, which may cause unnecessary system reboots.",
+        "active": true,
+        "category": {"id": 4, "name": "Stability"},
+        "impact": {"name": "System Reboot", "impact": 3},
+        "likelihood": 2,
+        "node_id": "34567",
+        "tags": "kernel panic oops stability reboot",
+        "playbook_count": 0,
+        "reboot_required": false,
+        "publish_date": "2023-11-05T02:41:00Z",
+        "summary": "kernel.panic_on_oops is enabled, which may cause unnecessary system reboots.",
+        "generic": "When kernel.panic_on_oops is enabled, any kernel oops will cause a full system panic and reboot, which may result in unnecessary downtime for recoverable errors.",
+        "reason": "This host has kernel.panic_on_oops set to 1. Kernel oops events that would normally be recoverable will instead trigger a full system panic and reboot.",
+        "more_info": "",
+        "impacted_systems_count": 1,
+        "reports_shown": true,
+        "rule_status": "enabled",
+        "resolution_set": [
+          {
+            "system_type": 105,
+            "resolution": "Red Hat recommends setting kernel.panic_on_oops=0 via sysctl. Add kernel.panic_on_oops=0 to /etc/sysctl.d/99-custom.conf and run sysctl -p.",
+            "resolution_risk": {"name": "Update Sysctl", "risk": 1},
+            "has_playbook": false
+          }
+        ],
+        "total_risk": 2,
+        "hosts_acked_count": 0,
+        "rating": 0
+      }
+    ],
+
+    "hosts_hitting_rules": {
+      "network_firewall_zone_drift_enabled|ENABLE_FIREWALL_ZONE_DRIFTING_WARN": [
+        "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+        "c3d4e5f6-a7b8-9012-cdef-123456789012"
+      ],
+      "sshd_config_permissions|SSHD_CONFIG_PERMISSIONS_WARN": [
+        "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+        "b2c3d4e5-f6a7-8901-bcde-f12345678901",
+        "d4e5f6a7-b8c9-0123-defa-234567890123"
+      ],
+      "kernel_panic_on_oops|KERNEL_PANIC_ON_OOPS_ENABLED_WARN": [
+        "b2c3d4e5-f6a7-8901-bcde-f12345678901"
+      ]
+    },
+
+    "hosts_details_for_rules": {
+      "network_firewall_zone_drift_enabled|ENABLE_FIREWALL_ZONE_DRIFTING_WARN": [
+        {
+          "system_uuid": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+          "display_name": "web-server-prod-01.example.com",
+          "last_seen": "2026-08-01T10:00:00Z",
+          "stale_at": "2026-08-04T10:00:00Z",
+          "hits": 3,
+          "critical_hits": 0,
+          "important_hits": 1,
+          "moderate_hits": 2,
+          "low_hits": 0,
+          "incident_hits": 0,
+          "all_pathway_hits": 1,
+          "pathway_filter_hits": 2,
+          "rhel_version": "9.2",
+          "impacted_date": "2026-07-15T06:13:07.632773Z"
+        },
+        {
+          "system_uuid": "c3d4e5f6-a7b8-9012-cdef-123456789012",
+          "display_name": "app-server-staging-02.example.com",
+          "last_seen": "2026-08-01T11:00:00Z",
+          "stale_at": "2026-08-04T11:00:00Z",
+          "hits": 2,
+          "critical_hits": 0,
+          "important_hits": 0,
+          "moderate_hits": 2,
+          "low_hits": 0,
+          "incident_hits": 0,
+          "all_pathway_hits": 0,
+          "pathway_filter_hits": 1,
+          "rhel_version": "9.4",
+          "impacted_date": "2026-07-20T08:45:00.000000Z"
+        }
+      ],
+      "sshd_config_permissions|SSHD_CONFIG_PERMISSIONS_WARN": [
+        {
+          "system_uuid": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+          "display_name": "web-server-prod-01.example.com",
+          "last_seen": "2026-08-01T10:00:00Z",
+          "stale_at": "2026-08-04T10:00:00Z",
+          "hits": 3,
+          "critical_hits": 0,
+          "important_hits": 1,
+          "moderate_hits": 2,
+          "low_hits": 0,
+          "incident_hits": 0,
+          "all_pathway_hits": 1,
+          "pathway_filter_hits": 2,
+          "rhel_version": "9.2",
+          "impacted_date": "2026-06-10T12:00:00.000000Z"
+        },
+        {
+          "system_uuid": "b2c3d4e5-f6a7-8901-bcde-f12345678901",
+          "display_name": "db-server-prod-01.example.com",
+          "last_seen": "2026-08-01T09:30:00Z",
+          "stale_at": "2026-08-04T09:30:00Z",
+          "hits": 5,
+          "critical_hits": 1,
+          "important_hits": 2,
+          "moderate_hits": 2,
+          "low_hits": 0,
+          "incident_hits": 1,
+          "all_pathway_hits": 1,
+          "pathway_filter_hits": 3,
+          "rhel_version": "8.8",
+          "impacted_date": "2026-06-01T09:00:00.000000Z"
+        },
+        {
+          "system_uuid": "d4e5f6a7-b8c9-0123-defa-234567890123",
+          "display_name": "app-worker-staging-03.example.com",
+          "last_seen": "2026-07-28T06:00:00Z",
+          "stale_at": "2026-07-31T06:00:00Z",
+          "hits": 4,
+          "critical_hits": 0,
+          "important_hits": 1,
+          "moderate_hits": 2,
+          "low_hits": 1,
+          "incident_hits": 0,
+          "all_pathway_hits": 0,
+          "pathway_filter_hits": 2,
+          "rhel_version": "8.8",
+          "impacted_date": "2026-07-01T14:30:00.000000Z"
+        }
+      ],
+      "kernel_panic_on_oops|KERNEL_PANIC_ON_OOPS_ENABLED_WARN": [
+        {
+          "system_uuid": "b2c3d4e5-f6a7-8901-bcde-f12345678901",
+          "display_name": "db-server-prod-01.example.com",
+          "last_seen": "2026-08-01T09:30:00Z",
+          "stale_at": "2026-08-04T09:30:00Z",
+          "hits": 5,
+          "critical_hits": 1,
+          "important_hits": 2,
+          "moderate_hits": 2,
+          "low_hits": 0,
+          "incident_hits": 1,
+          "all_pathway_hits": 1,
+          "pathway_filter_hits": 3,
+          "rhel_version": "8.8",
+          "impacted_date": "2026-05-20T15:00:00.000000Z"
+        }
+      ]
+    }
+  },
+
+  "planning": {
+    "rhel_lifecycle": [
+      {
+        "name": "RHEL",
+        "start_date": "2014-06-10",
+        "end_date": "2024-06-30",
+        "support_status": "Extended Life Phase",
+        "display_name": "RHEL 7",
+        "major": 7,
+        "minor": null,
+        "end_date_e4s": null,
+        "end_date_els": "2028-06-30",
+        "end_date_eus": null
+      },
+      {
+        "name": "RHEL",
+        "start_date": "2019-05-07",
+        "end_date": "2029-05-31",
+        "support_status": "Maintenance Support",
+        "display_name": "RHEL 8",
+        "major": 8,
+        "minor": null,
+        "end_date_e4s": null,
+        "end_date_els": "2032-05-31",
+        "end_date_eus": null
+      },
+      {
+        "name": "RHEL",
+        "start_date": "2023-05-16",
+        "end_date": "2025-05-31",
+        "support_status": "Supported",
+        "display_name": "RHEL 8.8",
+        "major": 8,
+        "minor": 8,
+        "end_date_e4s": null,
+        "end_date_els": "2027-05-31",
+        "end_date_eus": "2025-05-31"
+      },
+      {
+        "name": "RHEL",
+        "start_date": "2022-05-17",
+        "end_date": "2032-05-31",
+        "support_status": "Full Support",
+        "display_name": "RHEL 9",
+        "major": 9,
+        "minor": null,
+        "end_date_e4s": null,
+        "end_date_els": "2035-05-31",
+        "end_date_eus": null
+      },
+      {
+        "name": "RHEL",
+        "start_date": "2023-05-10",
+        "end_date": "2025-05-31",
+        "support_status": "Supported",
+        "display_name": "RHEL 9.2",
+        "major": 9,
+        "minor": 2,
+        "end_date_e4s": null,
+        "end_date_els": "2027-05-31",
+        "end_date_eus": "2025-05-31"
+      },
+      {
+        "name": "RHEL",
+        "start_date": "2024-04-30",
+        "end_date": "2026-04-30",
+        "support_status": "Full Support",
+        "display_name": "RHEL 9.4",
+        "major": 9,
+        "minor": 4,
+        "end_date_e4s": "2028-04-30",
+        "end_date_els": null,
+        "end_date_eus": "2026-04-30"
+      },
+      {
+        "name": "RHEL",
+        "start_date": "2025-05-13",
+        "end_date": "2035-05-31",
+        "support_status": "Full Support",
+        "display_name": "RHEL 10",
+        "major": 10,
+        "minor": null,
+        "end_date_e4s": null,
+        "end_date_els": null,
+        "end_date_eus": null
+      }
+    ],
+
+    "appstreams_raw": {
+      "9": {
+        "meta": {"count": 4, "total": 4},
+        "data": [
+          {
+            "name": "nodejs",
+            "display_name": "Node.js 18",
+            "application_stream_name": "Node.js 18",
+            "application_stream_type": "Full Life Application Stream",
+            "stream": "18",
+            "start_date": "2023-05-01",
+            "end_date": "2025-04-30",
+            "impl": "module",
+            "initial_product_version": "9.2",
+            "support_status": "Supported",
+            "os_major": 9,
+            "os_minor": 2,
+            "lifecycle": null,
+            "rolling": false
+          },
+          {
+            "name": "nodejs",
+            "display_name": "Node.js 20",
+            "application_stream_name": "Node.js 20",
+            "application_stream_type": "Full Life Application Stream",
+            "stream": "20",
+            "start_date": "2024-04-01",
+            "end_date": "2026-04-30",
+            "impl": "module",
+            "initial_product_version": "9.4",
+            "support_status": "Supported",
+            "os_major": 9,
+            "os_minor": 4,
+            "lifecycle": null,
+            "rolling": false
+          },
+          {
+            "name": "python3.11",
+            "display_name": "Python 3.11",
+            "application_stream_name": "Python 3.11",
+            "application_stream_type": "Full Life Application Stream",
+            "stream": "3.11",
+            "start_date": "2023-05-01",
+            "end_date": "2027-11-30",
+            "impl": "package",
+            "initial_product_version": "9.2",
+            "support_status": "Supported",
+            "os_major": 9,
+            "os_minor": 2,
+            "lifecycle": null,
+            "rolling": false
+          },
+          {
+            "name": "php",
+            "display_name": "PHP 8.2",
+            "application_stream_name": "PHP 8.2",
+            "application_stream_type": "Full Life Application Stream",
+            "stream": "8.2",
+            "start_date": "2024-04-01",
+            "end_date": "2026-12-31",
+            "impl": "module",
+            "initial_product_version": "9.4",
+            "support_status": "Supported",
+            "os_major": 9,
+            "os_minor": 4,
+            "lifecycle": null,
+            "rolling": false
+          }
+        ]
+      }
+    },
+
+    "appstreams_streams": {
+      "meta": {"count": 4, "total": 4},
+      "data": [
+        {
+          "name": "nodejs",
+          "display_name": "Node.js 18",
+          "application_stream_name": "Node.js 18",
+          "application_stream_type": "Full Life Application Stream",
+          "stream": "18",
+          "start_date": "2023-05-01",
+          "end_date": "2025-04-30",
+          "impl": "module",
+          "initial_product_version": "9.2",
+          "support_status": "Supported",
+          "os_major": 9,
+          "os_minor": 2,
+          "lifecycle": null,
+          "rolling": false
+        },
+        {
+          "name": "nodejs",
+          "display_name": "Node.js 20",
+          "application_stream_name": "Node.js 20",
+          "application_stream_type": "Full Life Application Stream",
+          "stream": "20",
+          "start_date": "2024-04-01",
+          "end_date": "2026-04-30",
+          "impl": "module",
+          "initial_product_version": "9.4",
+          "support_status": "Supported",
+          "os_major": 9,
+          "os_minor": 4,
+          "lifecycle": null,
+          "rolling": false
+        },
+        {
+          "name": "python3.11",
+          "display_name": "Python 3.11",
+          "application_stream_name": "Python 3.11",
+          "application_stream_type": "Full Life Application Stream",
+          "stream": "3.11",
+          "start_date": "2023-05-01",
+          "end_date": "2027-11-30",
+          "impl": "package",
+          "initial_product_version": "9.2",
+          "support_status": "Supported",
+          "os_major": 9,
+          "os_minor": 2,
+          "lifecycle": null,
+          "rolling": false
+        },
+        {
+          "name": "php",
+          "display_name": "PHP 8.2",
+          "application_stream_name": "PHP 8.2",
+          "application_stream_type": "Full Life Application Stream",
+          "stream": "8.2",
+          "start_date": "2024-04-01",
+          "end_date": "2026-12-31",
+          "impl": "module",
+          "initial_product_version": "9.4",
+          "support_status": "Supported",
+          "os_major": 9,
+          "os_minor": 4,
+          "lifecycle": null,
+          "rolling": false
+        }
+      ]
+    },
+
+    "upcoming_changes": {
+      "meta": {"count": 3, "total": 3},
+      "data": [
+        {
+          "name": "Deprecate Python 3.9 in RHEL 9",
+          "type": "deprecation",
+          "packages": ["python3.9"],
+          "release": "9",
+          "os_major": 9,
+          "date": "2027-05-31",
+          "details": {
+            "architecture": "",
+            "detailFormat": 0,
+            "summary": "Python 3.9 will be deprecated in favor of 3.11+",
+            "trainingTicket": "RHELBU-0001",
+            "dateAdded": "2026-01-01",
+            "lastModified": "2026-06-01"
+          },
+          "package": "python3.9"
+        },
+        {
+          "name": "Remove iptables in RHEL 10",
+          "type": "removal",
+          "packages": ["iptables"],
+          "release": "10",
+          "os_major": 10,
+          "date": "2030-05-31",
+          "details": {
+            "architecture": "",
+            "detailFormat": 0,
+            "summary": "iptables replaced by nftables",
+            "trainingTicket": "RHELBU-0002",
+            "dateAdded": "2025-06-01",
+            "lastModified": "2026-03-01"
+          },
+          "package": "iptables"
+        },
+        {
+          "name": "Security hold on xz 5.6.x in RHEL 8",
+          "type": "deprecation",
+          "packages": ["xz"],
+          "release": "8",
+          "os_major": 8,
+          "date": "2024-04-01",
+          "details": {
+            "architecture": "",
+            "detailFormat": 0,
+            "summary": "xz 5.6.x versions pulled due to CVE-2024-3094 backdoor",
+            "trainingTicket": "RHELBU-0003",
+            "dateAdded": "2024-03-30",
+            "lastModified": "2024-04-05"
+          },
+          "package": "xz"
+        }
+      ]
+    },
+
+    "relevant_upcoming": {
+      "meta": {"count": 3, "total": 3},
+      "data": [
+        {
+          "name": "Deprecate Python 3.9 in RHEL 9",
+          "type": "deprecation",
+          "packages": ["python3.9"],
+          "release": "9",
+          "date": "2027-05-31",
+          "details": {
+            "architecture": "",
+            "detailFormat": 0,
+            "summary": "Python 3.9 will be deprecated in favor of 3.11+",
+            "trainingTicket": "RHELBU-0001",
+            "dateAdded": "2026-01-01",
+            "lastModified": "2026-06-01",
+            "potentiallyAffectedSystemsCount": 1,
+            "potentiallyAffectedSystemsDetail": [
+              {
+                "id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+                "display_name": "web-server-prod-01.example.com",
+                "os_major": 9,
+                "os_minor": 2
+              }
+            ]
+          },
+          "package": "python3.9"
+        },
+        {
+          "name": "Remove iptables in RHEL 10",
+          "type": "removal",
+          "packages": ["iptables"],
+          "release": "10",
+          "date": "2030-05-31",
+          "details": {
+            "architecture": "",
+            "detailFormat": 0,
+            "summary": "iptables replaced by nftables",
+            "trainingTicket": "RHELBU-0002",
+            "dateAdded": "2025-06-01",
+            "lastModified": "2026-03-01"
+          },
+          "package": "iptables"
+        },
+        {
+          "name": "Security hold on xz 5.6.x in RHEL 8",
+          "type": "deprecation",
+          "packages": ["xz"],
+          "release": "8",
+          "date": "2024-04-01",
+          "details": {
+            "architecture": "",
+            "detailFormat": 0,
+            "summary": "xz 5.6.x versions pulled due to CVE-2024-3094 backdoor",
+            "trainingTicket": "RHELBU-0003",
+            "dateAdded": "2024-03-30",
+            "lastModified": "2024-04-05",
+            "potentiallyAffectedSystemsCount": 2,
+            "potentiallyAffectedSystemsDetail": [
+              {
+                "id": "b2c3d4e5-f6a7-8901-bcde-f12345678901",
+                "display_name": "db-server-prod-01.example.com",
+                "os_major": 8,
+                "os_minor": 8
+              },
+              {
+                "id": "d4e5f6a7-b8c9-0123-defa-234567890123",
+                "display_name": "app-worker-staging-03.example.com",
+                "os_major": 8,
+                "os_minor": 8
+              }
+            ]
+          },
+          "package": "xz"
+        }
+      ]
+    },
+
+    "relevant_rhel_lifecycle": {
+      "meta": {"count": 3, "total": 3},
+      "data": [
+        {
+          "name": "RHEL",
+          "display_name": "RHEL 9.2",
+          "major": 9,
+          "minor": 2,
+          "start_date": "2023-05-10",
+          "end_date": "2025-05-31",
+          "support_status": "Supported",
+          "count": 1,
+          "lifecycle_type": "mainline",
+          "related": false,
+          "systems_detail": [
+            {
+              "id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+              "display_name": "web-server-prod-01.example.com",
+              "os_major": 9,
+              "os_minor": 2
+            }
+          ],
+          "systems": ["a1b2c3d4-e5f6-7890-abcd-ef1234567890"]
+        },
+        {
+          "name": "RHEL",
+          "display_name": "RHEL 8.8",
+          "major": 8,
+          "minor": 8,
+          "start_date": "2023-05-16",
+          "end_date": "2025-05-31",
+          "support_status": "Supported",
+          "count": 2,
+          "lifecycle_type": "eus",
+          "related": false,
+          "systems_detail": [
+            {
+              "id": "b2c3d4e5-f6a7-8901-bcde-f12345678901",
+              "display_name": "db-server-prod-01.example.com",
+              "os_major": 8,
+              "os_minor": 8
+            },
+            {
+              "id": "d4e5f6a7-b8c9-0123-defa-234567890123",
+              "display_name": "app-worker-staging-03.example.com",
+              "os_major": 8,
+              "os_minor": 8
+            }
+          ],
+          "systems": [
+            "b2c3d4e5-f6a7-8901-bcde-f12345678901",
+            "d4e5f6a7-b8c9-0123-defa-234567890123"
+          ]
+        },
+        {
+          "name": "RHEL",
+          "display_name": "RHEL 9.4",
+          "major": 9,
+          "minor": 4,
+          "start_date": "2024-04-30",
+          "end_date": "2026-04-30",
+          "support_status": "Full Support",
+          "count": 1,
+          "lifecycle_type": "mainline",
+          "related": false,
+          "systems_detail": [
+            {
+              "id": "c3d4e5f6-a7b8-9012-cdef-123456789012",
+              "display_name": "app-server-staging-02.example.com",
+              "os_major": 9,
+              "os_minor": 4
+            }
+          ],
+          "systems": ["c3d4e5f6-a7b8-9012-cdef-123456789012"]
+        }
+      ]
+    },
+
+    "relevant_appstreams": {
+      "meta": {"count": 3, "total": 3},
+      "data": [
+        {
+          "name": "nodejs:18",
+          "display_name": "Node.js 18",
+          "application_stream_name": "Node.js 18",
+          "stream": "18",
+          "start_date": "2023-05-01",
+          "end_date": "2025-04-30",
+          "support_status": "Supported",
+          "os_major": 9,
+          "os_minor": 2,
+          "related": false
+        },
+        {
+          "name": "nodejs:20",
+          "display_name": "Node.js 20",
+          "application_stream_name": "Node.js 20",
+          "stream": "20",
+          "start_date": "2024-04-01",
+          "end_date": "2026-04-30",
+          "support_status": "Supported",
+          "os_major": 9,
+          "os_minor": 4,
+          "related": true
+        },
+        {
+          "name": "python3.11",
+          "display_name": "Python 3.11",
+          "application_stream_name": "Python 3.11",
+          "stream": "3.11",
+          "start_date": "2023-05-01",
+          "end_date": "2027-11-30",
+          "support_status": "Supported",
+          "os_major": 9,
+          "os_minor": 2,
+          "related": false
+        }
+      ]
+    }
+  },
+
+  "image_builder": {
+    "distributions": [
+      {"name": "rhel-9", "description": "Red Hat Enterprise Linux 9"},
+      {"name": "rhel-8", "description": "Red Hat Enterprise Linux 8"},
+      {"name": "centos-9", "description": "CentOS Stream 9"}
+    ],
+
+    "blueprints": [
+      {
+        "id": "bp-001",
+        "name": "base-rhel9-web",
+        "description": "Base RHEL 9 image with web server packages",
+        "distribution": "rhel-9",
+        "packages": ["httpd", "mod_ssl", "php"],
+        "created": "2026-06-15T10:00:00Z"
+      }
+    ],
+
+    "composes": [
+      {
+        "id": "compose-001",
+        "blueprint_id": "bp-001",
+        "status": "success",
+        "image_type": "aws-ami",
+        "created": "2026-07-01T14:00:00Z"
+      }
+    ]
+  },
+
+  "content_sources": {
+    "repositories": [
+      {
+        "uuid": "repo-001",
+        "name": "rhel-9-baseos",
+        "url": "https://cdn.redhat.com/content/dist/rhel9/9/x86_64/baseos/os",
+        "origin": "red_hat",
+        "content_type": "rpm",
+        "distribution_arch": "x86_64",
+        "distribution_versions": ["9"],
+        "status": "Valid",
+        "last_introspection_time": "2026-08-01T00:00:00Z",
+        "package_count": 1500,
+        "enabled": true
+      },
+      {
+        "uuid": "repo-002",
+        "name": "rhel-9-appstream",
+        "url": "https://cdn.redhat.com/content/dist/rhel9/9/x86_64/appstream/os",
+        "origin": "red_hat",
+        "content_type": "rpm",
+        "distribution_arch": "x86_64",
+        "distribution_versions": ["9"],
+        "status": "Valid",
+        "last_introspection_time": "2026-08-01T00:00:00Z",
+        "package_count": 5000,
+        "enabled": true
+      },
+      {
+        "uuid": "repo-003",
+        "name": "rhel-8-baseos",
+        "url": "https://cdn.redhat.com/content/dist/rhel8/8/x86_64/baseos/os",
+        "origin": "red_hat",
+        "content_type": "rpm",
+        "distribution_arch": "x86_64",
+        "distribution_versions": ["8"],
+        "status": "Valid",
+        "last_introspection_time": "2026-08-01T00:00:00Z",
+        "package_count": 1200,
+        "enabled": true
+      },
+      {
+        "uuid": "repo-004",
+        "name": "epel-9",
+        "url": "https://dl.fedoraproject.org/pub/epel/9/Everything/x86_64/",
+        "origin": "external",
+        "content_type": "rpm",
+        "distribution_arch": "x86_64",
+        "distribution_versions": ["9"],
+        "status": "Valid",
+        "last_introspection_time": "2026-07-30T00:00:00Z",
+        "package_count": 3200,
+        "enabled": true
+      }
+    ]
+  },
+
+  "rbac": {
+    "access": [
+      {"permission": "vulnerability:vulnerability:read", "resourceDefinitions": []},
+      {"permission": "inventory:hosts:read", "resourceDefinitions": []},
+      {"permission": "advisor:*:read", "resourceDefinitions": []},
+      {"permission": "remediations:remediation:write", "resourceDefinitions": []}
+    ]
+  },
+
+  "rhsm": {
+    "activation_keys": [
+      {
+        "name": "prod-rhel9-key",
+        "description": "Production RHEL 9 activation key",
+        "serviceLevel": "Premium",
+        "role": "Red Hat Enterprise Linux Server",
+        "usage": "Production",
+        "releaseVersion": "9.4",
+        "additionalRepositories": []
+      },
+      {
+        "name": "staging-rhel8-key",
+        "description": "Staging RHEL 8 activation key",
+        "serviceLevel": "Standard",
+        "role": "Red Hat Enterprise Linux Server",
+        "usage": "Development/Test",
+        "releaseVersion": "8.8",
+        "additionalRepositories": []
+      }
+    ]
+  },
+
+  "remediations": {
+    "resolutions": {
+      "vulnerabilities:CVE-2024-6387": {
+        "id": "vulnerabilities:CVE-2024-6387",
+        "resolutions": [
+          {"id": "fix", "description": "Update openssh packages to fix CVE-2024-6387", "needs_reboot": false, "resolution_risk": 3}
+        ]
+      },
+      "vulnerabilities:CVE-2024-3094": {
+        "id": "vulnerabilities:CVE-2024-3094",
+        "resolutions": [
+          {"id": "fix", "description": "Update xz packages to fix CVE-2024-3094", "needs_reboot": false, "resolution_risk": 3}
+        ]
+      },
+      "vulnerabilities:CVE-2024-1086": {
+        "id": "vulnerabilities:CVE-2024-1086",
+        "resolutions": [
+          {"id": "fix", "description": "Update kernel packages to fix CVE-2024-1086", "needs_reboot": true, "resolution_risk": 4}
+        ]
+      },
+      "vulnerabilities:CVE-2024-1234": {
+        "id": "vulnerabilities:CVE-2024-1234",
+        "resolutions": [
+          {"id": "fix", "description": "Update example-lib packages to fix CVE-2024-1234", "needs_reboot": false, "resolution_risk": 2}
+        ]
+      },
+      "vulnerabilities:CVE-2024-21626": {
+        "id": "vulnerabilities:CVE-2024-21626",
+        "resolutions": [
+          {"id": "fix", "description": "Update runc packages to fix CVE-2024-21626", "needs_reboot": false, "resolution_risk": 3}
+        ]
+      }
+    },
+
+    "playbook_yaml": "---\n- name: Remediate CVE-2024-6387 on affected systems\n  hosts: web-server-prod-01.example.com,db-server-prod-01.example.com,app-server-staging-02.example.com\n  become: true\n  tasks:\n    - name: Update openssh packages\n      yum:\n        name: openssh-server\n        state: latest\n"
+  },
+
+  "vmaas": {
+    "cve_list": [
+      {
+        "cve": "CVE-2024-6387",
+        "affected_packages": ["openssh-server-8.7p1-34.el9.x86_64", "openssh-server-8.0p1-17.el8.x86_64"],
+        "errata": ["RHSA-2024:4312"]
+      },
+      {
+        "cve": "CVE-2024-1086",
+        "affected_packages": ["kernel-5.14.0-284.el9.x86_64", "kernel-4.18.0-477.el8.x86_64"],
+        "errata": ["RHSA-2024:0897"]
+      },
+      {
+        "cve": "CVE-2024-21626",
+        "affected_packages": ["runc-1.1.9-1.el9.x86_64"],
+        "errata": ["RHSA-2024:0670"]
+      },
+      {
+        "cve": "CVE-2024-1234",
+        "affected_packages": ["example-lib-1.2.3-1.el9.x86_64", "example-lib-1.2.3-1.el8.x86_64"],
+        "errata": ["RHSA-2024:0456"]
+      }
+    ],
+    "manually_fixable_cve_list": [],
+    "unpatched_cve_list": [
+      {
+        "cve": "CVE-2024-3094",
+        "affected_packages": ["xz-libs-5.6.0-1.el8.x86_64"],
+        "affected": "xz-libs-5.6.0-1.el8.x86_64 is affected"
+      }
+    ]
+  }
+}
