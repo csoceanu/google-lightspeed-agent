@@ -1,0 +1,4 @@
+category: vulnerability
+difficulty: medium
+prompt: Explain what CVE-2024-6387 is and how it could impact my RHEL systems.
+scenario_type: single_tool

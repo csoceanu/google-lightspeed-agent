@@ -1,8 +1,9 @@
 name: lightspeed-agent-evaluation
 description: >
   Evaluate the Red Hat Lightspeed Agent via A2A protocol using AEH.
-  Sends questions to a deployed agent, captures responses, and scores
-  with deterministic and LLM-based judges.
+  Sends 7 deterministic questions (1 per question type) to a deployed
+  agent, captures responses, and scores with deterministic checks and
+  LLM-based judges.
 
 execution:
   mode: case
@@ -29,14 +30,16 @@ mlflow:
 dataset:
   path: cases
   schema: >
-    Each case has input.yaml with a prompt, category, scenario_type, and
-    difficulty. Annotations include expected_tools, expected_response, and
-    expected_behavior.
+    8 cases covering all question types: binary, single_select,
+    multiple_select, substring_match, exact_match, ordered_list, free_form.
+    Each case has input.yaml (prompt, category, scenario_type, difficulty)
+    and annotations.yaml (expected_tools, expected_response,
+    expected_behavior, question_type).
 
 outputs:
   - path: output
     schema: >
-      response.txt contains the agent's text response.
+      response.txt contains the agent's text response (reasoning blocks stripped).
       a2a_response.json contains the full A2A protocol response.
       metrics.json contains timing and token usage data.
 
@@ -46,14 +49,24 @@ traces:
   metrics: true
 
 judges:
-  - name: safety
-    module: evals.agent_eval_harness.judges.safety
-    function: judge
-
+  # Deterministic judges (no LLM needed, run first)
   - name: response_received
     module: evals.agent_eval_harness.judges.response_received
     function: judge
 
+  - name: safety
+    module: evals.agent_eval_harness.judges.safety
+    function: judge
+
+  - name: answer_correctness
+    module: evals.agent_eval_harness.judges.answer_correctness
+    function: judge
+
+  - name: tool_match
+    module: evals.agent_eval_harness.judges.tool_match
+    function: judge
+
+  # LLM-as-judge (require JUDGE_API_URL, JUDGE_API_KEY, JUDGE_MODEL)
   - name: correctness
     module: evals.agent_eval_harness.judges.correctness
     function: judge

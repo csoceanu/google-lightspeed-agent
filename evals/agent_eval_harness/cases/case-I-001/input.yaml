@@ -1,4 +1,0 @@
-prompt: "Show me the top 5 most recently active hosts"
-category: inventory
-scenario_type: single_tool
-difficulty: easy
