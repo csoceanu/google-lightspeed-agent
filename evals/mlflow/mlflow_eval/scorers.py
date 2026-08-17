@@ -294,38 +294,44 @@ class AnswerCorrectness(Scorer):
 
 
 class ToolMatch(Scorer):
-    """Check whether the agent mentioned the expected MCP tools in its response.
+    """Check whether the agent invoked the expected MCP tools.
 
-    Looks for tool short names (after the ``domain__`` prefix) in the
-    agent's response text.  Returns the fraction of expected tools found.
-
-    This is a lightweight text-based check. For trace-level tool call
-    verification, use :class:`ToolCallCorrectness` instead.
+    Checks the A2A execution trace first (if available via
+    ``expectations["a2a_trace"]``), falling back to the response text.
+    This matches the AEH ``tool_match`` judge behavior.
     """
 
     name: str = "tool_match"
     description: str = (
-        "Text-based check: scans the agent's response text for mentions of expected MCP tool "
-        "short names (e.g. 'get_cve_systems', not 'vulnerability__get_cve_systems'). "
-        "Score: fraction of expected tools found in the response text "
-        "(1.0 = all mentioned, 0.5 = half, 0.0 = none). "
-        "Returns 1.0 when no tools are expected (e.g. no_tool scenario questions). "
-        "NOTE: This only checks whether tool names appear in the text — it does NOT verify "
-        "the agent actually called those tools. For trace-based verification of actual tool "
-        "invocations, use the ToolCallCorrectness scorer instead."
+        "Checks whether the agent invoked the expected MCP tools. "
+        "Checks the A2A execution trace first (if available), falling back "
+        "to the response text. Matches the AEH tool_match judge behavior. "
+        "Score: fraction of expected tools found "
+        "(1.0 = all found, 0.5 = half, 0.0 = none). "
+        "Returns 1.0 when no tools are expected."
     )
 
     def __call__(self, *, inputs, outputs, expectations, **kwargs):
+        import json as _json
+
         expected_tools = expectations.get("expected_tools", [])
         if not expected_tools:
             return 1.0
 
-        response = outputs if isinstance(outputs, str) else str(outputs)
-        norm = _normalize(response)
+        a2a_trace = expectations.get("a2a_trace")
+        if a2a_trace:
+            try:
+                search_text = _json.dumps(a2a_trace).lower()
+            except (TypeError, ValueError):
+                search_text = str(a2a_trace).lower()
+        else:
+            response = outputs if isinstance(outputs, str) else str(outputs)
+            search_text = _normalize(response)
 
         found = sum(
             1 for t in expected_tools
-            if _normalize(_extract_tool_short_name(t)) in norm or _normalize(t) in norm
+            if _normalize(_extract_tool_short_name(t)) in search_text
+            or _normalize(t) in search_text
         )
         return round(found / len(expected_tools), 4)
 

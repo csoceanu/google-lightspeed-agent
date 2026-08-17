@@ -1,6 +1,7 @@
-expected_behavior:
-- "Must identify find_host_by_name as the correct tool for looking up hosts by display name"
-expected_response: 'find_host_by_name'
 expected_tools:
-- inventory__find_host_by_name
+  - inventory__find_host_by_name
+expected_response: inventory__find_host_by_name
+expected_behavior:
+  - "Must identify inventory__find_host_by_name as the correct tool for looking up hosts by display name"
 question_type: single_select
+scenario_intent: meta_knowledge

@@ -1,10 +1,10 @@
 expected_tools: []
 expected_response:
-  - get_cve
-  - get_cve_systems
-  - get_system_cves
+  - vulnerability__get_cve
+  - vulnerability__get_cve_systems
+  - vulnerability__get_system_cves
 expected_behavior:
-  - "Must identify get_cve, get_cve_systems, and get_system_cves as vulnerability management tools"
+  - "Must identify vulnerability__get_cve, vulnerability__get_cve_systems, and vulnerability__get_system_cves as vulnerability management tools"
   - "Must not include create_vuln_playbook (belongs to remediations domain)"
 question_type: multiple_select
 options:
@@ -12,3 +12,4 @@ options:
   - get_cve_systems
   - create_vuln_playbook
   - get_system_cves
+scenario_intent: meta_knowledge

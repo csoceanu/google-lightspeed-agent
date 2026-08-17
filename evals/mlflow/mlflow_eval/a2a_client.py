@@ -72,7 +72,7 @@ def send_a2a_message(
     resp.raise_for_status()
     data = resp.json()
 
-    return _extract_text(data)
+    return _extract_text(data), data
 
 
 def _extract_text(response: dict) -> str:
@@ -164,8 +164,13 @@ def a2a_predict_fn(
         )
     """
 
+    traces = {}
+
     def predict(question: str, question_id: str) -> str:
         logger.info("A2A request %s: %s", question_id, question[:60])
-        return send_a2a_message(agent_url, question, token=token, timeout=timeout)
+        text, raw = send_a2a_message(agent_url, question, token=token, timeout=timeout)
+        traces[question_id] = raw
+        return text
 
+    predict.traces = traces
     return predict

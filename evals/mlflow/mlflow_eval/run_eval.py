@@ -122,6 +122,8 @@ def main():
         try:
             answer = predict(question=q, question_id=qid)
             d["outputs"] = answer
+            if qid in predict.traces:
+                d["expectations"]["a2a_trace"] = predict.traces[qid]
             print(f"  {qid}: {answer[:60]}...")
         except Exception as exc:
             d["outputs"] = f"ERROR: {exc}"

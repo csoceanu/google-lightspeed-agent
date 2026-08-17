@@ -11,7 +11,8 @@ expected_behavior:
   - "Must mention the vulnerability severity and potential impact on RHEL systems"
 question_type: free_form
 note: >
-  This test is data-dependent. The expected response assumes CVE-2024-6387
-  exists in the MCP data. In production, the LLM correctness judge evaluates
-  whether the agent's explanation is coherent and factually grounded in
-  whatever data the MCP returns.
+  Data-dependent test. Assumes CVE-2024-6387 exists in the MCP data.
+  In production, the LLM correctness judge evaluates whether the
+  explanation is coherent and factually grounded in whatever data
+  the MCP returns.
+scenario_intent: functional
