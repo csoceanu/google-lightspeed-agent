@@ -8,3 +8,9 @@ expected_behavior:
   - "The agent should list the severity levels in the correct descending order: Critical > Important > Moderate > Low."
 question_type: ordered_list
 scenario_intent: meta_knowledge
+grading_note: >
+  Tests factual knowledge of severity ordering. Items must
+  appear in the response in strictly ascending position order.
+note: >
+  Tests factual knowledge only. Not data-dependent — works
+  against any backend.

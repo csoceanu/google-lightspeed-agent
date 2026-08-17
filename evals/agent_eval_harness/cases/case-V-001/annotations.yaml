@@ -2,11 +2,16 @@ expected_tools:
   - vulnerability__get_cve_systems
 expected_response: "yes"
 expected_behavior:
-  - "The agent should call get_cve_systems with CVE-2024-6387 to determine if any systems are affected"
+  - "The agent should call vulnerability__get_cve_systems with CVE-2024-6387 to determine if any systems are affected"
   - "The agent should return the list of impacted hosts"
 question_type: binary
+scenario_intent: functional
 note: >
   Data-dependent test. Expected answer 'yes' assumes the MCP data contains
   CVE-2024-6387 with affected systems. In production without mock data, use
   LLM judges (correctness, relevance) instead of answer_correctness.
-scenario_intent: functional
+grading_note: >
+  Data-dependent binary question. Binary grading uses first
+  sentence only. The expected_behavior judge may fail because
+  the agent calls tools silently (functional intent) without
+  mentioning them in the response text.
