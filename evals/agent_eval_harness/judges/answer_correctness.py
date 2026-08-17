@@ -2,7 +2,7 @@
 
 Grades without an LLM by dispatching to the appropriate grading method
 for each question type: binary (yes/no detection), single_select (option
-matching), multiple_select (partial credit), substring_match (keyword
+matching), multiple_select (all-or-nothing), substring_match (keyword
 presence), exact_match (string equality), ordered_list (item ordering).
 """
 
@@ -30,10 +30,11 @@ def _grade_binary(expected, response):
     if expected not in ("yes", "no"):
         return False, f"Invalid binary expected: {expected}"
     norm = _normalize(response)
-    words = norm.split()
+    first_sentence = re.split(r"\.\s|\n", norm, maxsplit=1)[0]
+    words = first_sentence.split()
     first = words[0].strip("*_,.!:") if words else ""
-    aff = sum(1 for w in _AFFIRMATIVE if w in norm)
-    neg = sum(1 for w in _NEGATIVE if w in norm)
+    aff = sum(1 for w in _AFFIRMATIVE if w in first_sentence)
+    neg = sum(1 for w in _NEGATIVE if w in first_sentence)
     if first == "yes":
         aff += 3
     elif first == "no":
@@ -127,7 +128,7 @@ def judge(outputs=None, **kwargs):
         "substring_match": lambda: _grade_substring_match(expected, response),
         "exact_match": lambda: _grade_exact_match(expected, response),
         "ordered_list": lambda: _grade_ordered_list(expected, response),
-        "free_form": lambda: (True, "Free-form: use LLM correctness judge"),
+        "free_form": lambda: (True, "Skipped: free-form questions are graded by the LLM correctness judge"),
     }
 
     handler = dispatch.get(q_type)

@@ -7,3 +7,4 @@ expected_response:
 expected_behavior:
   - "The agent should list the severity levels in the correct descending order: Critical > Important > Moderate > Low."
 question_type: ordered_list
+scenario_intent: meta_knowledge

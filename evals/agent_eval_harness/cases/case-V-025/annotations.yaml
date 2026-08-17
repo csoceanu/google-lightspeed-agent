@@ -8,3 +8,8 @@ expected_behavior:
   - "The agent should describe using get_cves with severity set to critical and known_exploit filter enabled"
   - "Must mention both the tool name and filtering criteria"
 question_type: substring_match
+scenario_intent: meta_knowledge
+grading_note: >
+  Keywords are intentionally broad (e.g. "exploit" not
+  "known_exploit") to match natural language descriptions
+  of the filtering workflow.

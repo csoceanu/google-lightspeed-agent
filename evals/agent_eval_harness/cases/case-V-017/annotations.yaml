@@ -12,3 +12,4 @@ options:
   - get_cve_systems
   - create_vuln_playbook
   - get_system_cves
+scenario_intent: meta_knowledge

@@ -15,3 +15,4 @@ note: >
   In production, the LLM correctness judge evaluates whether the
   explanation is coherent and factually grounded in whatever data
   the MCP returns.
+scenario_intent: functional

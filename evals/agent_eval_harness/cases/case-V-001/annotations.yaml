@@ -9,3 +9,4 @@ note: >
   Data-dependent test. Expected answer 'yes' assumes the MCP data contains
   CVE-2024-6387 with affected systems. In production without mock data, use
   LLM judges (correctness, relevance) instead of answer_correctness.
+scenario_intent: functional
