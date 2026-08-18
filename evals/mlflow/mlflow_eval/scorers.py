@@ -6,8 +6,8 @@ scorers that match the evaluation strategy in the project ADR.
 Usage::
 
     import mlflow
-    from mlflowplug.scorers import (
-        AnswerCorrectness, ToolMatch, BehaviorCoverage,          # code-based
+    from mlflow_eval.scorers import (
+        AnswerCorrectness,                                       # code-based
         SafetyGuidelines, ErrorHandlingGuidelines,               # LLM judge
         ToolCallCorrectness,                                     # trace-based
     )
@@ -19,26 +19,31 @@ Usage::
         scorers=[
             # Deterministic — no LLM needed
             AnswerCorrectness(),
-            ToolMatch(),
-            BehaviorCoverage(),
             # Trace-based — queries MLflow for actual tool calls
             ToolCallCorrectness(agent_experiment_name="lightspeed-agent"),
-            # LLM judge — need MLFLOW_GENAI_JUDGE_DEFAULT_MODEL set
-            Correctness(),
-            RelevanceToQuery(),
-            SafetyGuidelines(),
-            ErrorHandlingGuidelines(),
-            ExpectationsGuidelines(),
+            # LLM judge — pass model= explicitly to avoid OpenAI fallback
+            Correctness(model=judge_model),
+            RelevanceToQuery(model=judge_model),
+            SafetyGuidelines(model=judge_model),
+            ErrorHandlingGuidelines(model=judge_model),
+            ExpectationsGuidelines(model=judge_model),
         ],
     )
 """
 
 from __future__ import annotations
 
+import json
 import logging
 import re
+import sys
+import threading
+import time
+from concurrent.futures import ThreadPoolExecutor
 from typing import Any
 
+import mlflow
+from mlflow.entities import Feedback, SpanType
 from mlflow.genai import make_judge
 from mlflow.genai.scorers import Guidelines, Scorer
 
@@ -52,31 +57,6 @@ logger = logging.getLogger(__name__)
 def _normalize(text: str) -> str:
     return " ".join(text.lower().split())
 
-
-def _extract_tool_short_name(tool: str) -> str:
-    """Extract the short tool name from a namespaced tool identifier.
-
-    Handles both formats used in the dataset:
-    - ``vulnerability__get_cves`` (double underscore) → ``get_cves``
-    - ``vulnerability_get_cves`` (single underscore, as agent sees it) → ``get_cves``
-    - ``content-sources__list_repositories`` (hyphenated domain) → ``list_repositories``
-    - ``get_cves`` (bare name) → ``get_cves``
-
-    The MCP server mounts tools with a single underscore namespace
-    (``{toolset_name}_``), so the agent sees ``vulnerability_get_cves``.
-    The dataset uses double underscore for clarity. This function handles both.
-    """
-    if "__" in tool:
-        return tool.split("__", 1)[-1]
-    known_prefixes = (
-        "vulnerability_", "inventory_", "advisor_", "planning_",
-        "remediations_", "rbac_", "rhsm_", "content-sources_",
-        "image-builder_",
-    )
-    for prefix in known_prefixes:
-        if tool.startswith(prefix):
-            return tool[len(prefix):]
-    return tool
 
 
 _AFFIRMATIVE = [
@@ -219,18 +199,6 @@ def grade_response(question_type: str, expected: Any, options: Any, response: st
 # Code-based scorers (deterministic, no LLM)
 # ---------------------------------------------------------------------------
 
-_STOP_WORDS = frozenset(
-    "a an the is are was were be been being have has had do does did "
-    "will would shall should may might must can could to of in for on "
-    "with at by from as into through during before after above below "
-    "between out off over under again further then once here there when "
-    "where why how all each every both few more most other some such "
-    "only own same than too very just because but and or nor not so if "
-    "while about up that this these those it its i me my myself we our "
-    "ours you your he him his she her they them their what which who "
-    "whom agent response answer the".split()
-)
-
 
 class ResponseReceived(Scorer):
     """Validate that the agent returned a usable response.
@@ -293,183 +261,160 @@ class AnswerCorrectness(Scorer):
         return score
 
 
-class ToolMatch(Scorer):
-    """Check whether the agent invoked the expected MCP tools.
-
-    Checks the A2A execution trace first (if available via
-    ``expectations["a2a_trace"]``), falling back to the response text.
-    This matches the AEH ``tool_match`` judge behavior.
-    """
-
-    name: str = "tool_match"
-    description: str = (
-        "Checks whether the agent invoked the expected MCP tools. "
-        "Checks the A2A execution trace first (if available), falling back "
-        "to the response text. Matches the AEH tool_match judge behavior. "
-        "Score: fraction of expected tools found "
-        "(1.0 = all found, 0.5 = half, 0.0 = none). "
-        "Returns 1.0 when no tools are expected."
-    )
-
-    def __call__(self, *, inputs, outputs, expectations, **kwargs):
-        import json as _json
-
-        expected_tools = expectations.get("expected_tools", [])
-        if not expected_tools:
-            return 1.0
-
-        a2a_trace = expectations.get("a2a_trace")
-        if a2a_trace:
-            try:
-                search_text = _json.dumps(a2a_trace).lower()
-            except (TypeError, ValueError):
-                search_text = str(a2a_trace).lower()
-        else:
-            response = outputs if isinstance(outputs, str) else str(outputs)
-            search_text = _normalize(response)
-
-        found = sum(
-            1 for t in expected_tools
-            if _normalize(_extract_tool_short_name(t)) in search_text
-            or _normalize(t) in search_text
-        )
-        return round(found / len(expected_tools), 4)
-
-
-class BehaviorCoverage(Scorer):
-    """Keyword coverage from the expected_behavior description.
-
-    Extracts non-stopword keywords from ``expected_behavior`` and checks
-    what fraction appears in the agent's response.
-    """
-
-    name: str = "behavior_coverage"
-    description: str = (
-        "Measures how well the agent's response follows the expected behavior pattern "
-        "defined in the evaluation dataset. Extracts meaningful keywords from the "
-        "expected_behavior field (filtering out stop words) and checks what fraction "
-        "appear in the response. "
-        "Score: fraction of behavior keywords found (1.0 = all keywords present, "
-        "0.0 = none). Returns 1.0 when no expected behavior is defined. "
-        "Example: if expected_behavior says 'agent should call get_cve_systems with "
-        "CVE-2024-6387 to determine affected systems', keywords like 'call', "
-        "'determine', 'affected', 'systems' must appear in the response."
-    )
-
-    def __call__(self, *, inputs, outputs, expectations, **kwargs):
-        behavior = expectations.get("expected_behavior", "")
-        if not behavior:
-            return 1.0
-
-        keywords = {
-            t for t in re.findall(r"[a-zA-Z]+", behavior.lower())
-            if t not in _STOP_WORDS and len(t) > 2
-        }
-        if not keywords:
-            return 1.0
-
-        response = outputs if isinstance(outputs, str) else str(outputs)
-        norm = _normalize(response)
-        matched = sum(1 for kw in keywords if kw in norm)
-        return round(matched / len(keywords), 4)
-
-
 # ---------------------------------------------------------------------------
-# Trace-based scorer (code-based, queries MLflow for actual tool calls)
+# Trace-based scorer (queries MLflow for actual tool calls)
+# Uses caching and concurrent trace fetching for performance.
 # ---------------------------------------------------------------------------
 
 class ToolCallCorrectness(Scorer):
-    """Verify the agent called the correct MCP tools by inspecting traces.
+    """Check if the agent called the expected MCP tools by querying its traces.
 
-    Queries the MLflow tracking server for the agent's trace spans and
-    compares actual tool call spans against the ``expected_tools`` field
-    in the dataset.  This checks what tools the agent *actually invoked*,
-    not just what it mentioned in text.
+    Searches the agent's MLflow experiment for traces matching each evaluation
+    question, extracts TOOL-type spans, and compares them against the
+    expected_tools field from the dataset.
 
-    Returns:
-        ``"yes"`` if all expected tools were called (and no extras),
-        ``"no"`` if none matched, or a float for partial match.
-
-    Args:
-        agent_experiment_name: The MLflow experiment where agent traces
-            are logged (e.g. ``"lightspeed-agent"``).
-        tracking_uri: MLflow tracking URI. Defaults to the active URI.
+    Results:
+        yes     — all expected tools called, no unexpected tools
+        partial — some expected tools called, some missing, no unexpected
+        no      — unexpected tools called, or none of the expected tools called
+        unknown — could not find the agent's trace on the MLflow server
     """
 
     name: str = "tool_call_correctness"
-    agent_experiment_name: str = "lightspeed-agent"
-    tracking_uri: str | None = None
-    description: str = (
-        "Verifies the agent actually invoked the correct MCP tools by querying "
-        "MLflow traces from the agent's experiment. Unlike tool_match (which checks "
-        "if tool names appear in the response text), this scorer inspects the actual "
-        "trace spans to see which tools were called during the agent's execution. "
-        "Compares tool call spans against the expected_tools field from the dataset. "
-        "Score: 'yes' = all expected tools called, 'no' = none matched, "
-        "partial float for partial match. Returns 'yes' when no tools are expected. "
-        "Requires the agent to log traces to the MLflow experiment specified by "
-        "agent_experiment_name."
-    )
+    agent_experiment_name: str | None = None
+    agent_experiment_id: str | None = None
+    trace_workers: int = 10
+    trace_hours: int = 12
 
-    def __call__(self, *, inputs, outputs, expectations, **kwargs):
-        expected_tools = expectations.get("expected_tools", [])
-        if not expected_tools:
-            return "yes"
+    def model_post_init(self, __context):
+        object.__setattr__(self, "_experiment_id_resolved", None)
+        object.__setattr__(self, "_trace_cache", [])
+        object.__setattr__(self, "_cache_lock", threading.Lock())
+        if self.agent_experiment_id:
+            self._experiment_id_resolved = self.agent_experiment_id
+            print(f"Agent traces experiment ID: {self._experiment_id_resolved}")
+        elif self.agent_experiment_name:
+            exp = mlflow.get_experiment_by_name(self.agent_experiment_name)
+            if not exp:
+                print(
+                    f"ERROR: Agent experiment '{self.agent_experiment_name}' not found on "
+                    "MLflow server. Tool call correctness cannot be checked without agent "
+                    "traces. Use agent_experiment_name or agent_experiment_id to specify "
+                    "the correct value.",
+                    file=sys.stderr,
+                )
+                sys.exit(1)
+            self._experiment_id_resolved = exp.experiment_id
+            print(
+                f"Agent traces experiment: {self.agent_experiment_name} "
+                f"(ID {self._experiment_id_resolved})"
+            )
+        else:
+            print(
+                "ERROR: Either agent_experiment_name or agent_experiment_id is required "
+                "for ToolCallCorrectness.",
+                file=sys.stderr,
+            )
+            sys.exit(1)
+        self._trace_cache = []
+        self._cache_lock = threading.Lock()
 
-        expected_short = {_extract_tool_short_name(t) for t in expected_tools}
+    def _load_traces(self):
+        with self._cache_lock:
+            if self._trace_cache:
+                return self._trace_cache
+            since_ms = int((time.time() - self.trace_hours * 3600) * 1000)
+            try:
+                stubs = mlflow.search_traces(
+                    locations=[self._experiment_id_resolved],
+                    filter_string=f"trace.timestamp_ms > {since_ms}",
+                    order_by=["timestamp_ms DESC"],
+                    return_type="list",
+                    include_spans=False,
+                )
+            except Exception as e:
+                print(f"    [tool_call] ERROR searching traces: {e}")
+                return []
 
-        actual_tools = self._get_tool_calls_from_trace(inputs)
-        if actual_tools is None:
-            return 0.0
-
-        actual_short = {_extract_tool_short_name(t) for t in actual_tools}
-
-        if expected_short == actual_short:
-            return "yes"
-        overlap = expected_short & actual_short
-        if not overlap:
-            return "no"
-        return round(len(overlap) / len(expected_short), 4)
-
-    def _get_tool_calls_from_trace(self, inputs) -> set[str] | None:
-        """Query MLflow for the agent's trace and extract tool call span names."""
-        try:
-            import mlflow
-            from mlflow import MlflowClient
-
-            uri = self.tracking_uri or mlflow.get_tracking_uri()
-            client = MlflowClient(tracking_uri=uri)
-
-            experiment = client.get_experiment_by_name(self.agent_experiment_name)
-            if experiment is None:
-                logger.warning("Experiment '%s' not found", self.agent_experiment_name)
-                return None
-
-            question = inputs.get("question", "") if isinstance(inputs, dict) else str(inputs)
-            traces = client.search_traces(
-                experiment_ids=[experiment.experiment_id],
-                max_results=5,
-                order_by=["timestamp_ms DESC"],
+            print(
+                f"    [tool_call] Fetching {len(stubs)} traces from experiment "
+                f"{self._experiment_id_resolved} ({self.trace_workers} concurrent workers)..."
             )
 
-            for trace in traces:
-                trace_inputs = trace.info.request_metadata.get("inputs", "")
-                if question and question[:50] in str(trace_inputs):
-                    tool_names = set()
-                    if trace.data and trace.data.spans:
-                        for span in trace.data.spans:
-                            span_name = span.name or ""
-                            if any(
-                                marker in span_name.lower()
-                                for marker in ("tool", "mcp", "__")
-                            ):
-                                tool_names.add(span_name)
-                    return tool_names
+            def _fetch(stub):
+                try:
+                    return mlflow.get_trace(stub.info.trace_id)
+                except Exception:
+                    return None
 
-        except Exception as exc:
-            logger.warning("Failed to query traces: %s", exc)
+            with ThreadPoolExecutor(max_workers=self.trace_workers) as pool:
+                results = pool.map(_fetch, stubs)
+                self._trace_cache.extend(t for t in results if t is not None)
+            print(f"    [tool_call] Cached {len(self._trace_cache)} traces")
+            return self._trace_cache
 
+    def _find_trace(self, question: str):
+        traces = self._load_traces()
+        for t in traces:
+            spans = t.data.spans if t.data else []
+            for span in spans:
+                if question in str(span.inputs or ""):
+                    return t
         return None
+
+    def __call__(self, *, inputs, expectations, **kwargs):
+        expected_raw = expectations.get("expected_tools", "[]")
+        expected = json.loads(expected_raw) if isinstance(expected_raw, str) else expected_raw
+        if not expected:
+            return Feedback(
+                name=self.name,
+                value="yes",
+                rationale="No tools expected for this question",
+            )
+        question = inputs.get("question", "")
+        trace = self._find_trace(question)
+        if not trace:
+            return Feedback(
+                name=self.name,
+                value="unknown",
+                rationale="Could not find agent trace on MLflow server",
+            )
+
+        tool_spans = trace.search_spans(span_type=SpanType.TOOL)
+        tools_called = {
+            span.name.removeprefix("execute_tool").strip() for span in tool_spans
+        }
+        expected_set = set(expected)
+        missing = expected_set - tools_called
+        unexpected = tools_called - expected_set
+
+        if unexpected:
+            return Feedback(
+                name=self.name,
+                value="no",
+                rationale=f"Unexpected tools called: {sorted(unexpected)}. "
+                f"Expected: {sorted(expected_set)}. Called: {sorted(tools_called)}",
+            )
+        if not missing:
+            return Feedback(
+                name=self.name,
+                value="yes",
+                rationale=f"All expected tools called: {sorted(expected_set)}",
+            )
+        if expected_set & tools_called:
+            return Feedback(
+                name=self.name,
+                value="partial",
+                rationale=f"Called: {sorted(expected_set & tools_called)}. "
+                f"Missing: {sorted(missing)}",
+            )
+        return Feedback(
+            name=self.name,
+            value="no",
+            rationale=f"None of the expected tools called. "
+            f"Expected: {sorted(expected_set)}. "
+            f"Called: {sorted(tools_called) if tools_called else 'none'}",
+        )
 
 
 # ---------------------------------------------------------------------------

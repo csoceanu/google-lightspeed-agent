@@ -6,21 +6,20 @@ questions is the ``cases/`` directory in AEH format.
 
 Quick start::
 
-    from mlflow_eval import load_cases, AnswerCorrectness, ToolMatch, BehaviorCoverage
+    from mlflow_eval import load_cases, AnswerCorrectness, ToolCallCorrectness
 
-    dataset = load_cases()  # loads 7 curated cases from cases/
+    dataset = load_cases()  # loads 8 curated cases from cases/
 
     mlflow.genai.evaluate(
         data=dataset,
         predict_fn=call_agent,
-        scorers=[AnswerCorrectness(), ToolMatch(), BehaviorCoverage()],
+        scorers=[AnswerCorrectness(), ToolCallCorrectness(agent_experiment_name="...")],
     )
 """
 
 from mlflow_eval.dataset import load_cases, load_dataset
 from mlflow_eval.scorers import (
     AnswerCorrectness,
-    BehaviorCoverage,
     DomainCorrectnessJudge,
     ErrorHandlingGuidelines,
     ErrorHandlingJudge,
@@ -28,18 +27,14 @@ from mlflow_eval.scorers import (
     SafetyGuidelines,
     SafetyJudge,
     ToolCallCorrectness,
-    ToolMatch,
 )
 from mlflow_eval.a2a_client import a2a_predict_fn
 from mlflow_eval.mock_insights_api import start_mock_api
-from mlflow_eval.vertex_judge import start_vertex_judge
 
 __all__ = [
     "load_cases",
     "load_dataset",
     "AnswerCorrectness",
-    "ToolMatch",
-    "BehaviorCoverage",
     "ToolCallCorrectness",
     "ResponseReceived",
     "SafetyGuidelines",
@@ -49,5 +44,4 @@ __all__ = [
     "DomainCorrectnessJudge",
     "a2a_predict_fn",
     "start_mock_api",
-    "start_vertex_judge",
 ]

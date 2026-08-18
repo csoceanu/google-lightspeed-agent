@@ -17,6 +17,7 @@ from __future__ import annotations
 
 import json
 import logging
+import os
 import re
 import uuid
 from typing import Callable
@@ -60,6 +61,7 @@ def send_a2a_message(
         },
     }
 
+    verify = os.environ.get("MLFLOW_TRACKING_INSECURE_TLS", "").lower() != "true"
     resp = requests.post(
         url,
         json=payload,
@@ -68,6 +70,7 @@ def send_a2a_message(
             "Authorization": f"Bearer {token}",
         },
         timeout=timeout,
+        verify=verify,
     )
     resp.raise_for_status()
     data = resp.json()

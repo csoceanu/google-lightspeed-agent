@@ -8,7 +8,7 @@ version = "0.1.0"
 description = "Evaluation framework for the Red Hat Lightspeed Agent"
 requires-python = ">=3.12"
 dependencies = [
-    "mlflow>=3.10.0",
+    "mlflow>=3.14.0",
     "requests>=2.31.0",
     "litellm>=1.0.0",
 ]

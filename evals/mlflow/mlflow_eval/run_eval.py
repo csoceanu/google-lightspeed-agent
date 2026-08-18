@@ -2,22 +2,28 @@
 """
 MLflow evaluation pipeline for the Lightspeed Agent.
 
-Sends questions from eval_dataset.json to the agent, grades responses
-using LLM judge scorers (default) and optional code-based scorers,
-and logs results to MLflow.
+Sends questions to a deployed agent via A2A, then scores responses using
+deterministic checks and LLM-as-a-judge scorers. Results are logged to MLflow.
+
+Data privacy: LLM-as-a-judge scorers send agent responses to the judge model
+for scoring. A self-hosted judge model (--judge-model) is required to prevent
+evaluation data from being sent to external cloud providers.
 
 Usage:
-    # Against a running agent (default: LLM judges):
-    python -m mlflow_eval.run_eval --agent-endpoint http://localhost:8000
+    # Set judge model (required — VPN-backed model for real Insights data):
+    export MLFLOW_GENAI_JUDGE_DEFAULT_MODEL="openai:/Qwen/Qwen3-14B"
+    export OPENAI_BASE_URL="https://<judge-endpoint>/v1"
+    export OPENAI_API_KEY="<api-key>"
 
-    # With code-based scorers too (needs mock data alignment):
-    python -m mlflow_eval.run_eval --agent-endpoint http://localhost:8000 --enable-code-scorers
+    # Skip TLS verification for internal clusters:
+    export MLFLOW_TRACKING_INSECURE_TLS=true
 
-    # Full stack (starts mock API + MCP + agent locally):
-    python -m mlflow_eval.run_full_stack --per-type 1
-
-    # View results:
-    mlflow ui --backend-store-uri sqlite:///mlflow.db
+    # Run evaluation:
+    python -m mlflow_eval.run_eval \\
+        --agent-endpoint https://<agent-endpoint> \\
+        --agent-token <bearer-token> \\
+        --tracking-uri https://<mlflow-endpoint> \\
+        --judge-model "openai:/Qwen/Qwen3-14B"
 """
 
 import argparse
@@ -27,6 +33,25 @@ import sys
 os.environ.setdefault("MLFLOW_GENAI_EVAL_SKIP_TRACE_VALIDATION", "True")
 
 import requests
+
+
+def _apply_tls_patch():
+    """Disable TLS certificate verification for internal OpenShift clusters.
+
+    Connections remain encrypted — only the CA check is skipped.
+    Connections remain encrypted — only the CA check is skipped.
+    """
+    if os.environ.get("MLFLOW_TRACKING_INSECURE_TLS", "").lower() == "true":
+        import requests.adapters
+        import urllib3
+        urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+        _original_send = requests.adapters.HTTPAdapter.send
+
+        def _patched_send(self, request, **kwargs):
+            kwargs["verify"] = False
+            return _original_send(self, request, **kwargs)
+
+        requests.adapters.HTTPAdapter.send = _patched_send
 
 
 def main():
@@ -45,14 +70,13 @@ def main():
     agent_group = parser.add_argument_group("agent")
     agent_group.add_argument("--agent-endpoint", default="http://localhost:8000",
                              help="Agent URL (default: http://localhost:8000)")
-    agent_group.add_argument("--agent-token", default="dev-token",
-                             help="Bearer token for A2A auth (default: dev-token)")
+    agent_group.add_argument("--agent-token", default="",
+                             help="Bearer token for agent authentication (required)")
 
     scorer_group = parser.add_argument_group("scorers")
-    scorer_group.add_argument("--enable-code-scorers", action="store_true",
-                              help="Enable code-based scorers (answer_correctness, tool_match, behavior_coverage)")
     scorer_group.add_argument("--judge-model", default=None,
-                              help="Override judge model (e.g. openai:/gpt-4o)")
+                              help="Judge model URI (e.g. openai:/Qwen/Qwen3-14B). "
+                              "Falls back to MLFLOW_GENAI_JUDGE_DEFAULT_MODEL env var.")
 
     mlflow_group = parser.add_argument_group("mlflow")
     mlflow_group.add_argument("--experiment", default="lightspeed-eval",
@@ -61,23 +85,52 @@ def main():
                               help="MLflow tracking URI")
     args = parser.parse_args()
 
+    # ── Safeguard: require token for agent authentication ─────────────
+    if not args.agent_token:
+        print(
+            "ERROR: --agent-token required. Provide a valid Bearer token "
+            "from Red Hat SSO for agent authentication.",
+            file=sys.stderr,
+        )
+        sys.exit(1)
+
+    # ── Safeguard: require judge model for data privacy ──────────────
+    judge_model = args.judge_model or os.environ.get("MLFLOW_GENAI_JUDGE_DEFAULT_MODEL", "")
+    if not judge_model:
+        print(
+            "ERROR: Judge model not set. Pass --judge-model or set "
+            "MLFLOW_GENAI_JUDGE_DEFAULT_MODEL. A self-hosted judge model is "
+            "required to prevent evaluation data from being sent to external "
+            "cloud providers.",
+            file=sys.stderr,
+        )
+        sys.exit(1)
+
+    # ── Apply TLS patch for internal clusters ────────────────────────
+    _apply_tls_patch()
+
+    # ── Rate limiting for judge model ────────────────────────────────
+    # Self-hosted judge models may have rate limits. Limit concurrent scorer
+    # threads so MLflow doesn't fire all judge calls in parallel.
+    os.environ.setdefault("MLFLOW_GENAI_EVAL_MAX_WORKERS", "1")
+
     import mlflow
     from mlflow.genai.scorers import Correctness, ExpectationsGuidelines, RelevanceToQuery
     from mlflow_eval.a2a_client import a2a_predict_fn
     from mlflow_eval.dataset import load_cases, load_dataset
     from mlflow_eval.scorers import (
         AnswerCorrectness,
-        BehaviorCoverage,
         ErrorHandlingGuidelines,
         ResponseReceived,
         SafetyGuidelines,
-        ToolMatch,
+        ToolCallCorrectness,
     )
 
     # ── Configure MLflow ──────────────────────────────────────────────
     mlflow.set_tracking_uri(args.tracking_uri)
     mlflow.set_experiment(args.experiment)
     mlflow.autolog(disable=True)
+    print(f"Judge model: {judge_model}")
 
     # ── Load dataset ──────────────────────────────────────────────────
     # Default: load curated cases from cases/ (single source of truth)
@@ -130,24 +183,21 @@ def main():
             print(f"  {qid}: ERROR - {exc}")
 
     # ── Build scorer list ─────────────────────────────────────────────
-    # LLM judges are the default — they evaluate quality even without
-    # mock data alignment. Code-based scorers are optional.
     scorers = [
+        # Deterministic (no LLM needed, run first)
         ResponseReceived(),
-        Correctness(),
-        RelevanceToQuery(),
-        ExpectationsGuidelines(),
-        SafetyGuidelines(model=args.judge_model),
-        ErrorHandlingGuidelines(model=args.judge_model),
+        AnswerCorrectness(),
+        # LLM judges (require judge model)
+        Correctness(model=judge_model),
+        RelevanceToQuery(model=judge_model),
+        ExpectationsGuidelines(model=judge_model),
+        SafetyGuidelines(model=judge_model),
+        ErrorHandlingGuidelines(model=judge_model),
+        # Trace-based (queries MLflow for actual tool calls)
+        ToolCallCorrectness(
+            agent_experiment_name=args.experiment,
+        ),
     ]
-
-    if args.enable_code_scorers:
-        scorers.extend([
-            AnswerCorrectness(),
-            ToolMatch(),
-            BehaviorCoverage(),
-        ])
-        print("Code-based scorers enabled")
 
     print(f"Scorers: {[s.name for s in scorers]}\n")
 
