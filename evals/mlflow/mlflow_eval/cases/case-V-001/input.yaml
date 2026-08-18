@@ -1,0 +1,4 @@
+category: vulnerability
+difficulty: easy
+prompt: Is CVE-2024-6387 affecting any of my systems?
+scenario_type: single_tool

@@ -1,0 +1,11 @@
+expected_tools:
+  - vulnerability__get_cve
+expected_response: vulnerability__get_cve
+expected_behavior:
+  - "The agent should return the exact tool name vulnerability__get_cve, which is the tool for retrieving detailed information about a single specific CVE."
+question_type: exact_match
+scenario_intent: meta_knowledge
+grading_note: >
+  Accepts both short form (get_cve) and fully qualified
+  (vulnerability__get_cve). The judge checks if the expected
+  string appears anywhere in the response.

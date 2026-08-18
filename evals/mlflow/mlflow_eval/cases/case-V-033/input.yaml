@@ -1,0 +1,4 @@
+category: vulnerability
+difficulty: easy
+prompt: What is the exact tool name used to retrieve details about a single CVE?
+scenario_type: single_tool

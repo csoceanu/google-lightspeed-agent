@@ -1,0 +1,4 @@
+category: vulnerability
+difficulty: easy
+prompt: How would you find all critical CVEs that have known exploits in my environment?
+scenario_type: single_tool

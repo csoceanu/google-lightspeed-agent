@@ -1,0 +1,25 @@
+[build-system]
+requires = ["setuptools>=64"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "lightspeed-eval"
+version = "0.1.0"
+description = "Evaluation framework for the Red Hat Lightspeed Agent"
+requires-python = ">=3.12"
+dependencies = [
+    "mlflow>=3.10.0",
+    "requests>=2.31.0",
+    "litellm>=1.0.0",
+]
+
+[project.optional-dependencies]
+full-stack = [
+    "anthropic>=0.20.0",
+]
+
+[tool.setuptools.packages.find]
+include = ["mlflow_eval*", "eval_grader*", "eval_runner*", "eval_reporter*", "eval_config*", "eval_utils*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
